@@ -295,7 +295,3 @@ static void installer_window_class_init(InstallerWindowClass *klass) {
 InstallerWindow *installer_window_new(GtkApplication *app) {
     return g_object_new(INSTALLER_TYPE_WINDOW, "application", app, NULL);
 }
-
-static void installer_window_class_init(InstallerWindowClass *klass) {
-    // Class initialization
-}
