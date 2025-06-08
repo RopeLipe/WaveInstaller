@@ -49,15 +49,11 @@ static GtkWidget *keyboard_screen_create_widget(InstallerScreen *screen) {
     
     self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     gtk_widget_add_css_class(self->widget, "installer-screen");
-    
-    // Title section
+      // Title section
     GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);
     gtk_widget_set_margin_bottom(title_box, 32);
-    
-    GtkWidget *icon = gtk_image_new_from_icon_name("input-keyboard");
-    gtk_image_set_pixel_size(GTK_IMAGE(icon), 64);
-    gtk_widget_set_margin_bottom(icon, 16);
+    gtk_widget_set_margin_top(title_box, 24);
     
     GtkWidget *title = gtk_label_new("Select Keyboard Layout");
     gtk_widget_add_css_class(title, "welcome-title");
@@ -65,7 +61,6 @@ static GtkWidget *keyboard_screen_create_widget(InstallerScreen *screen) {
     GtkWidget *subtitle = gtk_label_new("Choose your keyboard layout for typing in your language.");
     gtk_widget_add_css_class(subtitle, "welcome-subtitle");
     
-    gtk_box_append(GTK_BOX(title_box), icon);
     gtk_box_append(GTK_BOX(title_box), title);
     gtk_box_append(GTK_BOX(title_box), subtitle);
     

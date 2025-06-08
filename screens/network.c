@@ -48,19 +48,6 @@ static GtkWidget *create_wifi_row(const WifiNetwork *wifi) {
     gtk_widget_set_margin_top(row, 12);
     gtk_widget_set_margin_bottom(row, 12);
     
-    // WiFi icon
-    const gchar *wifi_icon = "network-wireless-signal-excellent";
-    if (wifi->strength < 30) {
-        wifi_icon = "network-wireless-signal-weak";
-    } else if (wifi->strength < 60) {
-        wifi_icon = "network-wireless-signal-ok";
-    } else if (wifi->strength < 80) {
-        wifi_icon = "network-wireless-signal-good";
-    }
-    
-    GtkWidget *icon = gtk_image_new_from_icon_name(wifi_icon);
-    gtk_image_set_pixel_size(GTK_IMAGE(icon), 24);
-    
     // Network info
     GtkWidget *info_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
     gtk_widget_set_hexpand(info_box, TRUE);
@@ -79,18 +66,7 @@ static GtkWidget *create_wifi_row(const WifiNetwork *wifi) {
     gtk_box_append(GTK_BOX(info_box), ssid_label);
     gtk_box_append(GTK_BOX(info_box), detail_label);
     
-    // Security icon
-    GtkWidget *security_icon = NULL;
-    if (wifi->secured) {
-        security_icon = gtk_image_new_from_icon_name("dialog-password");
-        gtk_image_set_pixel_size(GTK_IMAGE(security_icon), 16);
-    }
-    
-    gtk_box_append(GTK_BOX(row), icon);
     gtk_box_append(GTK_BOX(row), info_box);
-    if (security_icon) {
-        gtk_box_append(GTK_BOX(row), security_icon);
-    }
     
     return row;
 }
@@ -103,23 +79,17 @@ static GtkWidget *network_screen_create_widget(InstallerScreen *screen) {
     
     self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     gtk_widget_add_css_class(self->widget, "installer-screen");
-    
-    // Title section
+      // Title section
     GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);
     gtk_widget_set_margin_bottom(title_box, 32);
-    
-    GtkWidget *icon = gtk_image_new_from_icon_name("network-wired");
-    gtk_image_set_pixel_size(GTK_IMAGE(icon), 64);
-    gtk_widget_set_margin_bottom(icon, 16);
+    gtk_widget_set_margin_top(title_box, 24);
     
     GtkWidget *title = gtk_label_new("Network Configuration");
     gtk_widget_add_css_class(title, "welcome-title");
-    
-    GtkWidget *subtitle = gtk_label_new("Connect to the internet to download updates during installation.");
+      GtkWidget *subtitle = gtk_label_new("Connect to the internet to download updates during installation.");
     gtk_widget_add_css_class(subtitle, "welcome-subtitle");
     
-    gtk_box_append(GTK_BOX(title_box), icon);
     gtk_box_append(GTK_BOX(title_box), title);
     gtk_box_append(GTK_BOX(title_box), subtitle);
     

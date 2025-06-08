@@ -62,15 +62,11 @@ static GtkWidget *user_screen_create_widget(InstallerScreen *screen) {
     
     self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     gtk_widget_add_css_class(self->widget, "installer-screen");
-    
-    // Title section
+      // Title section
     GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);
     gtk_widget_set_margin_bottom(title_box, 32);
-    
-    GtkWidget *icon = gtk_image_new_from_icon_name("system-users");
-    gtk_image_set_pixel_size(GTK_IMAGE(icon), 64);
-    gtk_widget_set_margin_bottom(icon, 16);
+    gtk_widget_set_margin_top(title_box, 24);
     
     GtkWidget *title = gtk_label_new("Create Your Account");
     gtk_widget_add_css_class(title, "welcome-title");
@@ -80,29 +76,12 @@ static GtkWidget *user_screen_create_widget(InstallerScreen *screen) {
     gtk_label_set_wrap(GTK_LABEL(subtitle), TRUE);
     gtk_label_set_justify(GTK_LABEL(subtitle), GTK_JUSTIFY_CENTER);
     
-    gtk_box_append(GTK_BOX(title_box), icon);
     gtk_box_append(GTK_BOX(title_box), title);
     gtk_box_append(GTK_BOX(title_box), subtitle);
-    
-    // Form container
+      // Form container
     GtkWidget *form_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_halign(form_container, GTK_ALIGN_CENTER);
     gtk_widget_add_css_class(form_container, "user-form");
-    
-    // Avatar section
-    GtkWidget *avatar_section = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
-    gtk_widget_add_css_class(avatar_section, "avatar-chooser");
-    
-    self->avatar_image = gtk_image_new_from_icon_name("avatar-default");
-    gtk_image_set_pixel_size(GTK_IMAGE(self->avatar_image), 80);
-    gtk_widget_add_css_class(self->avatar_image, "avatar-image");
-    
-    GtkWidget *avatar_button = gtk_button_new_with_label("Change Avatar");
-    gtk_widget_add_css_class(avatar_button, "avatar-button");
-    g_signal_connect(avatar_button, "clicked", G_CALLBACK(on_avatar_clicked), self);
-    
-    gtk_box_append(GTK_BOX(avatar_section), self->avatar_image);
-    gtk_box_append(GTK_BOX(avatar_section), avatar_button);
     
     // Full name field
     GtkWidget *fullname_group = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
@@ -171,9 +150,7 @@ static GtkWidget *user_screen_create_widget(InstallerScreen *screen) {
     self->auto_login_check = gtk_check_button_new_with_label("Log in automatically");
     
     gtk_box_append(GTK_BOX(options_group), self->auto_login_check);
-    
-    // Add all sections to form
-    gtk_box_append(GTK_BOX(form_container), avatar_section);
+      // Add all sections to form
     gtk_box_append(GTK_BOX(form_container), fullname_group);
     gtk_box_append(GTK_BOX(form_container), username_group);
     gtk_box_append(GTK_BOX(form_container), password_group);
