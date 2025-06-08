@@ -52,22 +52,36 @@ static void on_disk_card_clicked(GtkGestureClick *gesture, gint n_press, gdouble
 static GtkWidget *create_disk_card(const DiskInfo *disk, DiskScreen *self) {
     GtkWidget *card = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
     gtk_widget_add_css_class(card, "disk-card");
-    gtk_widget_set_size_request(card, 280, 160);
+    gtk_widget_set_size_request(card, 280, 180);
     
     // Store disk path in card data
     g_object_set_data_full(G_OBJECT(card), "disk-path", g_strdup(disk->path), g_free);
     g_object_set_data(G_OBJECT(card), "screen", self);
-      // Add click gesture
+    
+    // Add click gesture
     GtkGesture *click_gesture = gtk_gesture_click_new();
     gtk_gesture_single_set_button(GTK_GESTURE_SINGLE(click_gesture), GDK_BUTTON_PRIMARY);
     g_signal_connect(click_gesture, "pressed", G_CALLBACK(on_disk_card_clicked), card);
     gtk_widget_add_controller(card, GTK_EVENT_CONTROLLER(click_gesture));
     
+    // Header with disk icon
+    GtkWidget *header_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
+    gtk_widget_set_halign(header_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_bottom(header_box, 8);
+    
+    // Disk icon
+    GtkWidget *disk_icon = gtk_image_new_from_icon_name(
+        g_str_equal(disk->type, "SSD") ? "drive-harddisk-solidstate" : "drive-harddisk");
+    gtk_image_set_pixel_size(GTK_IMAGE(disk_icon), 32);
+    gtk_widget_add_css_class(disk_icon, "disk-icon");
+    
     // Disk name
     GtkWidget *name_label = gtk_label_new(disk->name);
     gtk_widget_add_css_class(name_label, "disk-name");
-    gtk_widget_set_halign(name_label, GTK_ALIGN_CENTER);
     gtk_label_set_ellipsize(GTK_LABEL(name_label), PANGO_ELLIPSIZE_MIDDLE);
+    
+    gtk_box_append(GTK_BOX(header_box), disk_icon);
+    gtk_box_append(GTK_BOX(header_box), name_label);
     
     // Disk info box
     GtkWidget *info_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
@@ -84,19 +98,28 @@ static GtkWidget *create_disk_card(const DiskInfo *disk, DiskScreen *self) {
     GtkWidget *path_label = gtk_label_new(disk->path);
     gtk_widget_add_css_class(path_label, "disk-info");
     gtk_widget_set_halign(path_label, GTK_ALIGN_CENTER);
-    
-    // Warning if has OS
+      // Warning if has OS
     if (disk->has_os) {
-        GtkWidget *warning_label = gtk_label_new("⚠ Contains OS");
-        gtk_widget_add_css_class(warning_label, "disk-info");
-        gtk_widget_set_halign(warning_label, GTK_ALIGN_CENTER);
-        gtk_widget_set_margin_top(warning_label, 8);
-        gtk_box_append(GTK_BOX(info_box), warning_label);
+        GtkWidget *warning_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+        gtk_widget_set_halign(warning_box, GTK_ALIGN_CENTER);
+        gtk_widget_set_margin_top(warning_box, 8);
+        
+        GtkWidget *warning_icon = gtk_image_new_from_icon_name("dialog-warning");
+        gtk_image_set_pixel_size(GTK_IMAGE(warning_icon), 16);
+        gtk_widget_add_css_class(warning_icon, "warning-icon");
+        
+        GtkWidget *warning_label = gtk_label_new("Contains OS");
+        gtk_widget_add_css_class(warning_label, "disk-warning");
+        
+        gtk_box_append(GTK_BOX(warning_box), warning_icon);
+        gtk_box_append(GTK_BOX(warning_box), warning_label);
+        gtk_box_append(GTK_BOX(info_box), warning_box);
     }
-      gtk_box_append(GTK_BOX(info_box), size_type_label);
+    
+    gtk_box_append(GTK_BOX(info_box), size_type_label);
     gtk_box_append(GTK_BOX(info_box), path_label);
     
-    gtk_box_append(GTK_BOX(card), name_label);
+    gtk_box_append(GTK_BOX(card), header_box);
     gtk_box_append(GTK_BOX(card), info_box);
     
     return card;
@@ -107,9 +130,11 @@ static GtkWidget *disk_screen_create_widget(InstallerScreen *screen) {
     
     if (self->widget)
         return self->widget;
-    
-    self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
+      self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     gtk_widget_add_css_class(self->widget, "installer-screen");
+    gtk_widget_set_margin_top(self->widget, 48);
+    gtk_widget_set_margin_start(self->widget, 32);
+    gtk_widget_set_margin_end(self->widget, 32);
       // Title section
     GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);

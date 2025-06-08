@@ -48,25 +48,45 @@ static GtkWidget *create_wifi_row(const WifiNetwork *wifi) {
     gtk_widget_set_margin_top(row, 12);
     gtk_widget_set_margin_bottom(row, 12);
     
+    // WiFi signal icon
+    const gchar *signal_icon;
+    if (wifi->strength >= 75) signal_icon = "network-wireless-signal-excellent";
+    else if (wifi->strength >= 50) signal_icon = "network-wireless-signal-good";
+    else if (wifi->strength >= 25) signal_icon = "network-wireless-signal-ok";
+    else signal_icon = "network-wireless-signal-weak";
+    
+    GtkWidget *wifi_icon = gtk_image_new_from_icon_name(signal_icon);
+    gtk_image_set_pixel_size(GTK_IMAGE(wifi_icon), 24);
+    gtk_widget_add_css_class(wifi_icon, "wifi-icon");
+    
     // Network info
     GtkWidget *info_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
     gtk_widget_set_hexpand(info_box, TRUE);
     
     GtkWidget *ssid_label = gtk_label_new(wifi->ssid);
     gtk_widget_set_halign(ssid_label, GTK_ALIGN_START);
+    gtk_widget_add_css_class(ssid_label, "wifi-ssid");
     
-    gchar *detail_text = g_strdup_printf("%s • %d%%", 
-                                        wifi->secured ? "Secured" : "Open", 
-                                        wifi->strength);
-    GtkWidget *detail_label = gtk_label_new(detail_text);
-    gtk_widget_set_halign(detail_label, GTK_ALIGN_START);
-    gtk_widget_add_css_class(detail_label, "text-muted");
-    g_free(detail_text);
+    // Network type (secured/open)
+    GtkWidget *type_label = gtk_label_new(wifi->secured ? "Secured" : "Open");
+    gtk_widget_set_halign(type_label, GTK_ALIGN_START);
+    gtk_widget_add_css_class(type_label, "wifi-type");
     
     gtk_box_append(GTK_BOX(info_box), ssid_label);
-    gtk_box_append(GTK_BOX(info_box), detail_label);
+    gtk_box_append(GTK_BOX(info_box), type_label);
     
+    // Security icon for secured networks
+    GtkWidget *right_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+    if (wifi->secured) {
+        GtkWidget *lock_icon = gtk_image_new_from_icon_name("security-high");
+        gtk_image_set_pixel_size(GTK_IMAGE(lock_icon), 16);
+        gtk_widget_add_css_class(lock_icon, "security-icon");
+        gtk_box_append(GTK_BOX(right_box), lock_icon);
+    }
+    
+    gtk_box_append(GTK_BOX(row), wifi_icon);
     gtk_box_append(GTK_BOX(row), info_box);
+    gtk_box_append(GTK_BOX(row), right_box);
     
     return row;
 }
@@ -76,9 +96,11 @@ static GtkWidget *network_screen_create_widget(InstallerScreen *screen) {
     
     if (self->widget)
         return self->widget;
-    
-    self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
+      self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     gtk_widget_add_css_class(self->widget, "installer-screen");
+    gtk_widget_set_margin_top(self->widget, 48);
+    gtk_widget_set_margin_start(self->widget, 32);
+    gtk_widget_set_margin_end(self->widget, 32);
       // Title section
     GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);

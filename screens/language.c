@@ -79,9 +79,11 @@ static GtkWidget *language_screen_create_widget(InstallerScreen *screen) {
     
     if (self->widget)
         return self->widget;
-    
-    self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
+      self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     gtk_widget_add_css_class(self->widget, "installer-screen");
+    gtk_widget_set_margin_top(self->widget, 48);
+    gtk_widget_set_margin_start(self->widget, 32);
+    gtk_widget_set_margin_end(self->widget, 32);
       // Title section
     GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);
