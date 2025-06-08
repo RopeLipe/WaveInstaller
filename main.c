@@ -5,20 +5,22 @@ static void load_css(void) {
     GtkCssProvider *css_provider = gtk_css_provider_new();
     
     // Try to load from current directory first, then from system location
-    GError *error = NULL;
-    gboolean loaded = gtk_css_provider_load_from_path(css_provider, "style.css", &error);
+    GFile *css_file = g_file_new_for_path("style.css");
     
-    if (!loaded) {
-        g_clear_error(&error);
-        loaded = gtk_css_provider_load_from_path(css_provider, "/usr/local/share/wave-installer/style.css", &error);
+    if (!g_file_query_exists(css_file, NULL)) {
+        g_object_unref(css_file);
+        css_file = g_file_new_for_path("/usr/local/share/wave-installer/style.css");
     }
     
-    if (!loaded) {
-        g_warning("Failed to load CSS: %s", error ? error->message : "Unknown error");
-        g_clear_error(&error);
+    if (!g_file_query_exists(css_file, NULL)) {
+        g_warning("CSS file not found in current directory or system location");
+        g_object_unref(css_file);
         g_object_unref(css_provider);
         return;
     }
+    
+    gtk_css_provider_load_from_file(css_provider, css_file);
+    g_object_unref(css_file);
     
     // Apply CSS to default display
     GdkDisplay *display = gdk_display_get_default();
