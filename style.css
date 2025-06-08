@@ -1,393 +1,389 @@
-/* Wave Installer Custom Styles - Complete Adwaita Override */
+/* Wave Installer Modern UI - Complete Adwaita Override */
 
-/* =============================================================================
-   RESET AND BASE STYLING - HIGHEST PRIORITY OVERRIDES
-   ============================================================================= */
-
-/* Universal reset with maximum specificity */
+/* Reset all GTK defaults to prevent conflicts */
 * {
     outline: none !important;
     box-shadow: none !important;
     text-shadow: none !important;
     -gtk-icon-shadow: none !important;
-}
-
-/* Root window styling */
-window,
-window.background {
-    background: @theme_bg_color !important;
-    border-radius: 12px !important;
-    border: 1px solid @borders !important;
-}
-
-/* =============================================================================
-   HEADER AND PROGRESS BAR STYLING
-   ============================================================================= */
-
-/* Header bar styling */
-.header-bar,
-headerbar {
-    background: @headerbar_bg_color !important;
-    border-bottom: 1px solid @borders !important;
-    padding: 24px 32px !important;
-    border-top-left-radius: 12px !important;
-    border-top-right-radius: 12px !important;
-    min-height: 60px !important;
-}
-
-/* Progress bar styling with maximum override specificity */
-.installer-progress,
-progressbar.installer-progress,
-progressbar.installer-progress progress,
-progressbar.installer-progress trough {
-    min-height: 8px !important;
-    border-radius: 4px !important;
-    background: #f1f3f4 !important;
     border: none !important;
+    background: transparent !important;
+}
+
+/* Root window - modern rounded corners */
+window {
+    background: @theme_bg_color !important;
+    border-radius: 16px !important;
+    border: 1px solid alpha(@borders, 0.3) !important;
+}
+
+/* Header bar - clean and minimal */
+.header-bar {
+    background: @headerbar_bg_color !important;
+    border-bottom: 1px solid alpha(@borders, 0.2) !important;
+    padding: 20px 32px !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+}
+
+/* Progress bar - modern blue accent */
+.installer-progress {
+    min-height: 8px !important;
+    border-radius: 6px !important;
+    background: alpha(@theme_bg_color, 0.6) !important;
     margin: 0 !important;
     padding: 0 !important;
-    box-shadow: none !important;
 }
 
-.installer-progress text,
-progressbar.installer-progress text {
-    font-size: 0.9em !important;
-    color: @theme_fg_color !important;
-    font-weight: 500 !important;
-    margin-top: 4px !important;
-}
-
-progressbar.installer-progress progress {
-    background: linear-gradient(90deg, #0066cc 0%, #0052a3 100%) !important;
-    border-radius: 4px !important;
+.installer-progress progress,
+.installer-progress > trough {
     min-height: 8px !important;
+    border-radius: 6px !important;
+    background: alpha(@theme_bg_color, 0.6) !important;
 }
 
-/* =============================================================================
-   SCREEN CONTENT STYLING
-   ============================================================================= */
-
-/* Main installer screen styling */
-.installer-screen {
-    padding: 32px !important;
-    background: transparent !important;
-    margin-top: 16px !important;
+.installer-progress > trough > progress {
+    background: linear-gradient(90deg, #0066cc 0%, #0052a3 100%) !important;
+    border-radius: 6px !important;
+    border: none !important;
 }
 
-/* Welcome screen styling */
-.welcome-title {
-    font-size: 2em !important;
+/* Screen titles and subtitles */
+.screen-title {
+    font-size: 32px !important;
     font-weight: 700 !important;
     color: @theme_fg_color !important;
-    margin-bottom: 16px !important;
-    margin-top: 24px !important;
+    margin-bottom: 8px !important;
 }
 
-.welcome-subtitle {
-    font-size: 1.1em !important;
-    color: @theme_fg_color !important;
-    opacity: 0.8 !important;
+.screen-subtitle {
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    color: alpha(@theme_fg_color, 0.7) !important;
     margin-bottom: 24px !important;
-    margin-top: 8px !important;
-    text-align: center !important;
 }
 
-/* =============================================================================
-   NAVIGATION BUTTONS - AGGRESSIVE ADWAITA OVERRIDE
-   ============================================================================= */
-
-/* Navigation container */
+/* Navigation buttons - force override Adwaita */
 .navigation-box {
-    background: rgba(255, 255, 255, 0.98) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
     border-radius: 16px !important;
-    padding: 16px !important;
-    border: 1px solid #d0d7de !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08) !important;
-    backdrop-filter: blur(8px) !important;
-    margin: 16px !important;
+    padding: 12px !important;
+    border: 1px solid alpha(@borders, 0.3) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Maximum specificity button overrides */
 button.nav-button,
-.nav-button,
-button.nav-button:not(:disabled),
-.nav-button:not(:disabled),
-button.back-button,
-button.next-button,
-.back-button,
-.next-button {
+.nav-button {
     min-height: 48px !important;
     min-width: 120px !important;
     border-radius: 12px !important;
     padding: 14px 24px !important;
     font-weight: 600 !important;
     font-size: 15px !important;
-    margin: 4px !important;
+    margin: 0 !important;
     border: 2px solid transparent !important;
     transition: all 200ms ease !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-    outline: none !important;
-    -gtk-outline-radius: 12px !important;
+    background: transparent !important;
 }
 
-/* Back button styling with ultra-high specificity */
 button.nav-button.back-button,
-.nav-button.back-button,
-button.back-button,
-.back-button {
+.nav-button.back-button {
     background: #ffffff !important;
-    background-color: #ffffff !important;
-    background-image: none !important;
     color: #24292f !important;
     border-color: #d0d7de !important;
-    border: 2px solid #d0d7de !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 button.nav-button.back-button:hover,
-.nav-button.back-button:hover,
-button.back-button:hover,
-.back-button:hover {
+.nav-button.back-button:hover {
     background: #f6f8fa !important;
-    background-color: #f6f8fa !important;
-    background-image: none !important;
     border-color: #afb8c1 !important;
-    border: 2px solid #afb8c1 !important;
-    color: #1f2328 !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
     transform: translateY(-1px) !important;
 }
 
-button.nav-button.back-button:active,
-.nav-button.back-button:active,
-button.back-button:active,
-.back-button:active {
-    background: #eaeef2 !important;
-    background-color: #eaeef2 !important;
-    background-image: none !important;
-    transform: translateY(1px) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Next button styling with ultra-high specificity */
 button.nav-button.next-button,
-.nav-button.next-button,
-button.next-button,
-.next-button {
+.nav-button.next-button {
     background: linear-gradient(135deg, #0969da 0%, #0550ae 100%) !important;
-    background-color: #0969da !important;
-    background-image: linear-gradient(135deg, #0969da 0%, #0550ae 100%) !important;
     color: #ffffff !important;
     border-color: #0969da !important;
-    border: 2px solid #0969da !important;
     margin-left: 12px !important;
     box-shadow: 0 3px 6px rgba(9, 105, 218, 0.3) !important;
 }
 
 button.nav-button.next-button:hover,
-.nav-button.next-button:hover,
-button.next-button:hover,
-.next-button:hover {
+.nav-button.next-button:hover {
     background: linear-gradient(135deg, #0860ca 0%, #044289 100%) !important;
-    background-color: #0860ca !important;
-    background-image: linear-gradient(135deg, #0860ca 0%, #044289 100%) !important;
-    border-color: #0860ca !important;
-    border: 2px solid #0860ca !important;
     box-shadow: 0 4px 12px rgba(9, 105, 218, 0.4) !important;
     transform: translateY(-1px) !important;
 }
 
-button.nav-button.next-button:active,
-.nav-button.next-button:active,
-button.next-button:active,
-.next-button:active {
-    background: linear-gradient(135deg, #0757ba 0%, #033d7a 100%) !important;
-    background-color: #0757ba !important;
-    background-image: linear-gradient(135deg, #0757ba 0%, #033d7a 100%) !important;
-    transform: translateY(0) !important;
-    box-shadow: 0 2px 4px rgba(9, 105, 218, 0.3) !important;
+/* Disk cards - modern design with backgrounds */
+.disk-card {
+    background: @theme_bg_color !important;
+    border: 2px solid alpha(@borders, 0.3) !important;
+    border-radius: 16px !important;
+    padding: 0 !important;
+    margin: 8px !important;
+    transition: all 200ms ease !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Navigation button focus states for accessibility */
-.nav-button:focus-visible,
-button.nav-button:focus-visible,
-.back-button:focus-visible,
-.next-button:focus-visible {
+.disk-card:hover {
+    border-color: #0066cc !important;
+    box-shadow: 0 8px 24px rgba(0, 102, 204, 0.15) !important;
+    transform: translateY(-2px) !important;
+}
+
+.disk-card.selected {
+    border-color: #0066cc !important;
+    background: alpha(#0066cc, 0.05) !important;
+    box-shadow: 0 8px 24px rgba(0, 102, 204, 0.2) !important;
+}
+
+.disk-icon-large {
+    color: #0066cc !important;
+}
+
+.disk-name-large {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: @theme_fg_color !important;
+}
+
+.disk-size-large {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: @theme_fg_color !important;
+}
+
+.disk-type {
+    font-size: 14px !important;
+    color: alpha(@theme_fg_color, 0.7) !important;
+}
+
+.disk-path {
+    font-size: 12px !important;
+    color: alpha(@theme_fg_color, 0.5) !important;
+    font-family: monospace !important;
+}
+
+.disk-warning-badge {
+    background: alpha(#ff6b00, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 4px 8px !important;
+}
+
+.disk-warning-text {
+    font-size: 12px !important;
+    color: #cc5500 !important;
+    font-weight: 500 !important;
+}
+
+/* Installation options card */
+.options-card {
+    background: alpha(@theme_bg_color, 0.8) !important;
+    border: 1px solid alpha(@borders, 0.2) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.options-title {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: @theme_fg_color !important;
+}
+
+.option-label {
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: @theme_fg_color !important;
+}
+
+.option-description {
+    font-size: 13px !important;
+    color: alpha(@theme_fg_color, 0.6) !important;
+}
+
+/* Network cards and WiFi lists */
+.network-card {
+    background: @theme_bg_color !important;
+    border: 1px solid alpha(@borders, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.wifi-list {
+    border: 1px solid alpha(@borders, 0.2) !important;
+    border-radius: 12px !important;
+    background: @theme_bg_color !important;
+}
+
+.wifi-list listbox {
+    background: transparent !important;
+    border-radius: 12px !important;
+}
+
+.wifi-list listbox > row {
+    border-radius: 8px !important;
+    margin: 4px !important;
+    padding: 12px !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+}
+
+.wifi-list listbox > row:hover {
+    background: alpha(@theme_selected_bg_color, 0.1) !important;
+    border-color: alpha(@theme_selected_bg_color, 0.2) !important;
+}
+
+.wifi-list listbox > row:selected {
+    background: alpha(@theme_selected_bg_color, 0.15) !important;
+    border-color: @theme_selected_bg_color !important;
+}
+
+.wifi-icon {
+    color: #0066cc !important;
+}
+
+.wifi-ssid {
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: @theme_fg_color !important;
+}
+
+.wifi-type {
+    font-size: 13px !important;
+    color: alpha(@theme_fg_color, 0.6) !important;
+}
+
+.security-icon {
+    color: #00aa00 !important;
+}
+
+/* User form styling */
+.user-form-card {
+    background: @theme_bg_color !important;
+    border: 1px solid alpha(@borders, 0.2) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+.form-label {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: @theme_fg_color !important;
+    margin-bottom: 6px !important;
+}
+
+.form-entry {
+    min-height: 44px !important;
+    border: 2px solid alpha(@borders, 0.4) !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    background: @theme_base_color !important;
+    transition: border-color 200ms ease !important;
+}
+
+.form-entry:focus {
+    border-color: #0066cc !important;
+    outline: none !important;
+}
+
+.form-hint {
+    font-size: 12px !important;
+    color: alpha(@theme_fg_color, 0.6) !important;
+    margin-top: 4px !important;
+}
+
+.form-checkbox {
+    font-size: 14px !important;
+    color: @theme_fg_color !important;
+}
+
+/* Language list styling */
+.language-list {
+    border: 1px solid alpha(@borders, 0.2) !important;
+    border-radius: 12px !important;
+    background: @theme_bg_color !important;
+}
+
+.language-list listbox {
+    background: transparent !important;
+    border-radius: 12px !important;
+}
+
+.language-list listbox > row {
+    border-radius: 8px !important;
+    margin: 2px 8px !important;
+    padding: 12px 16px !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+}
+
+.language-list listbox > row:hover {
+    background: alpha(@theme_selected_bg_color, 0.1) !important;
+    border-color: alpha(@theme_selected_bg_color, 0.2) !important;
+}
+
+.language-list listbox > row:selected {
+    background: alpha(@theme_selected_bg_color, 0.15) !important;
+    border-color: @theme_selected_bg_color !important;
+}
+
+/* Dark theme overrides */
+@media (prefers-color-scheme: dark) {
+    .navigation-box {
+        background: rgba(30, 30, 30, 0.95) !important;
+        border-color: alpha(@borders, 0.4) !important;
+    }
+    
+    button.nav-button.back-button {
+        background: #2d2d2d !important;
+        color: #ffffff !important;
+        border-color: #555555 !important;
+    }
+    
+    button.nav-button.back-button:hover {
+        background: #3d3d3d !important;
+        border-color: #666666 !important;
+    }
+}
+
+/* Ensure listbox rounding everywhere */
+listbox {
+    border-radius: 12px !important;
+    background: @theme_bg_color !important;
+}
+
+listbox > row {
+    border-radius: 8px !important;
+    margin: 2px 4px !important;
+    background: transparent !important;
+}
+
+/* Focus states for accessibility */
+*:focus-visible {
     outline: 2px solid #0066cc !important;
     outline-offset: 2px !important;
 }
 
-/* =============================================================================
-   LIST AND CARD STYLING
-   ============================================================================= */
-
-/* List boxes with rounded corners */
-listbox,
-.listbox,
-listboxrow,
-.listboxrow {
-    border-radius: 12px !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    background: @theme_base_color !important;
-    margin: 2px !important;
-}
-
-listboxrow:hover,
-.listboxrow:hover {
-    background: rgba(0, 102, 204, 0.08) !important;
-    border-radius: 12px !important;
-}
-
-listboxrow:selected,
-.listboxrow:selected {
-    background: rgba(0, 102, 204, 0.15) !important;
-    border: 2px solid #0066cc !important;
-    border-radius: 12px !important;
-}
-
-/* Disk selection cards */
-.disk-card,
-.network-card {
-    background: @theme_base_color !important;
-    border-radius: 16px !important;
-    border: 2px solid rgba(0, 0, 0, 0.08) !important;
-    padding: 20px !important;
-    margin: 8px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+/* Ensure buttons work properly */
+button {
+    border-radius: 8px !important;
     transition: all 200ms ease !important;
 }
 
-.disk-card:hover,
-.network-card:hover {
-    border-color: rgba(0, 102, 204, 0.3) !important;
-    box-shadow: 0 4px 16px rgba(0, 102, 204, 0.1) !important;
-    transform: translateY(-2px) !important;
-}
-
-.disk-card.selected,
-.network-card.selected {
-    border-color: #0066cc !important;
-    background: rgba(0, 102, 204, 0.05) !important;
-    box-shadow: 0 4px 16px rgba(0, 102, 204, 0.2) !important;
-}
-
-/* =============================================================================
-   FORM STYLING
-   ============================================================================= */
-
-/* Form entries and inputs */
-entry,
-.form-entry,
-input {
-    border-radius: 8px !important;
-    border: 2px solid rgba(0, 0, 0, 0.1) !important;
-    padding: 12px 16px !important;
-    background: @theme_base_color !important;
-    font-size: 14px !important;
-    min-height: 20px !important;
-}
-
-entry:focus,
-.form-entry:focus,
-input:focus {
-    border-color: #0066cc !important;
-    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1) !important;
-    outline: none !important;
-}
-
-/* Form labels */
-.form-label,
-label {
-    font-weight: 600 !important;
+button:not(.nav-button) {
+    background: alpha(@theme_bg_color, 0.8) !important;
+    border: 1px solid alpha(@borders, 0.3) !important;
     color: @theme_fg_color !important;
-    margin-bottom: 6px !important;
-    font-size: 14px !important;
+    padding: 8px 16px !important;
 }
 
-/* Form groups */
-.form-group {
-    margin-bottom: 20px !important;
-}
-
-/* =============================================================================
-   THEME ADAPTATION
-   ============================================================================= */
-
-/* Dark theme adaptations */
-@media (prefers-color-scheme: dark) {
-    .navigation-box {
-        background: rgba(30, 30, 30, 0.98) !important;
-        border-color: #404040 !important;
-    }
-    
-    .disk-card,
-    .network-card {
-        border-color: rgba(255, 255, 255, 0.1) !important;
-    }
-    
-    entry,
-    .form-entry,
-    input {
-        border-color: rgba(255, 255, 255, 0.2) !important;
-    }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    .nav-button {
-        border-width: 3px !important;
-    }
-    
-    .disk-card.selected,
-    .network-card.selected {
-        border-width: 3px !important;
-    }
-    
-    entry:focus,
-    .form-entry:focus {
-        border-width: 3px !important;
-    }
-}
-
-/* =============================================================================
-   TEXT AND TYPOGRAPHY
-   ============================================================================= */
-
-/* Muted text styling */
-.text-muted {
-    opacity: 0.7 !important;
-    font-size: 0.9em !important;
-}
-
-/* Ensure proper text margins */
-label,
-.welcome-title,
-.welcome-subtitle {
-    margin-top: 8px !important;
-}
-
-/* =============================================================================
-   SCROLLED WINDOWS AND CONTAINERS
-   ============================================================================= */
-
-scrolledwindow,
-.scrolled-window {
-    border-radius: 12px !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-}
-
-/* =============================================================================
-   INSTALLATION PROGRESS STYLING
-   ============================================================================= */
-
-.install-progress {
-    margin: 24px 0 !important;
-}
-
-.install-log {
-    background: @theme_base_color !important;
-    border-radius: 8px !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    padding: 16px !important;
-    font-family: monospace !important;
-    font-size: 12px !important;
+button:not(.nav-button):hover {
+    background: alpha(@theme_selected_bg_color, 0.1) !important;
+    border-color: alpha(@theme_selected_bg_color, 0.4) !important;
 }

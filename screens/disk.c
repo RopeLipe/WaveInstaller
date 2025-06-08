@@ -50,9 +50,9 @@ static void on_disk_card_clicked(GtkGestureClick *gesture, gint n_press, gdouble
 }
 
 static GtkWidget *create_disk_card(const DiskInfo *disk, DiskScreen *self) {
-    GtkWidget *card = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
+    GtkWidget *card = gtk_box_new(GTK_ORIENTATION_VERTICAL, 16);
     gtk_widget_add_css_class(card, "disk-card");
-    gtk_widget_set_size_request(card, 280, 180);
+    gtk_widget_set_size_request(card, 320, 200);
     
     // Store disk path in card data
     g_object_set_data_full(G_OBJECT(card), "disk-path", g_strdup(disk->path), g_free);
@@ -64,63 +64,75 @@ static GtkWidget *create_disk_card(const DiskInfo *disk, DiskScreen *self) {
     g_signal_connect(click_gesture, "pressed", G_CALLBACK(on_disk_card_clicked), card);
     gtk_widget_add_controller(card, GTK_EVENT_CONTROLLER(click_gesture));
     
-    // Header with disk icon
-    GtkWidget *header_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
-    gtk_widget_set_halign(header_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(header_box, 8);
+    // Card has background and padding
+    gtk_widget_set_margin_top(card, 8);
+    gtk_widget_set_margin_bottom(card, 8);
+    gtk_widget_set_margin_start(card, 8);
+    gtk_widget_set_margin_end(card, 8);
     
-    // Disk icon
+    // Header with large disk icon
+    GtkWidget *header_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
+    gtk_widget_set_halign(header_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_top(header_box, 20);
+    
+    // Large disk icon
     GtkWidget *disk_icon = gtk_image_new_from_icon_name(
         g_str_equal(disk->type, "SSD") ? "drive-harddisk-solidstate" : "drive-harddisk");
-    gtk_image_set_pixel_size(GTK_IMAGE(disk_icon), 32);
-    gtk_widget_add_css_class(disk_icon, "disk-icon");
+    gtk_image_set_pixel_size(GTK_IMAGE(disk_icon), 48);
+    gtk_widget_add_css_class(disk_icon, "disk-icon-large");
     
-    // Disk name
+    // Disk name (prominent)
     GtkWidget *name_label = gtk_label_new(disk->name);
-    gtk_widget_add_css_class(name_label, "disk-name");
+    gtk_widget_add_css_class(name_label, "disk-name-large");
     gtk_label_set_ellipsize(GTK_LABEL(name_label), PANGO_ELLIPSIZE_MIDDLE);
     
     gtk_box_append(GTK_BOX(header_box), disk_icon);
     gtk_box_append(GTK_BOX(header_box), name_label);
     
-    // Disk info box
-    GtkWidget *info_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
-    gtk_widget_set_halign(info_box, GTK_ALIGN_CENTER);
+    // Disk details section
+    GtkWidget *details_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+    gtk_widget_set_halign(details_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_bottom(details_box, 20);
     
-    // Size and type
-    gchar *size_type_text = g_strdup_printf("%s • %s", disk->size, disk->type);
-    GtkWidget *size_type_label = gtk_label_new(size_type_text);
-    gtk_widget_add_css_class(size_type_label, "disk-info");
-    gtk_widget_set_halign(size_type_label, GTK_ALIGN_CENTER);
-    g_free(size_type_text);
+    // Size (most prominent)
+    GtkWidget *size_label = gtk_label_new(disk->size);
+    gtk_widget_add_css_class(size_label, "disk-size-large");
     
-    // Path
+    // Type
+    GtkWidget *type_label = gtk_label_new(disk->type);
+    gtk_widget_add_css_class(type_label, "disk-type");
+    
+    // Path (smaller)
     GtkWidget *path_label = gtk_label_new(disk->path);
-    gtk_widget_add_css_class(path_label, "disk-info");
-    gtk_widget_set_halign(path_label, GTK_ALIGN_CENTER);
-      // Warning if has OS
+    gtk_widget_add_css_class(path_label, "disk-path");
+    
+    gtk_box_append(GTK_BOX(details_box), size_label);
+    gtk_box_append(GTK_BOX(details_box), type_label);
+    gtk_box_append(GTK_BOX(details_box), path_label);
+    
+    // Warning if has OS (subtle badge)
     if (disk->has_os) {
-        GtkWidget *warning_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+        GtkWidget *warning_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
         gtk_widget_set_halign(warning_box, GTK_ALIGN_CENTER);
         gtk_widget_set_margin_top(warning_box, 8);
+        gtk_widget_add_css_class(warning_box, "disk-warning-badge");
         
         GtkWidget *warning_icon = gtk_image_new_from_icon_name("dialog-warning");
-        gtk_image_set_pixel_size(GTK_IMAGE(warning_icon), 16);
-        gtk_widget_add_css_class(warning_icon, "warning-icon");
+        gtk_image_set_pixel_size(GTK_IMAGE(warning_icon), 14);
+        gtk_widget_add_css_class(warning_icon, "warning-icon-small");
         
         GtkWidget *warning_label = gtk_label_new("Contains OS");
-        gtk_widget_add_css_class(warning_label, "disk-warning");
+        gtk_widget_add_css_class(warning_label, "disk-warning-text");
         
         gtk_box_append(GTK_BOX(warning_box), warning_icon);
         gtk_box_append(GTK_BOX(warning_box), warning_label);
-        gtk_box_append(GTK_BOX(info_box), warning_box);
+        gtk_box_append(GTK_BOX(details_box), warning_box);
     }
     
-    gtk_box_append(GTK_BOX(info_box), size_type_label);
-    gtk_box_append(GTK_BOX(info_box), path_label);
-    
     gtk_box_append(GTK_BOX(card), header_box);
-    gtk_box_append(GTK_BOX(card), info_box);
+    gtk_box_append(GTK_BOX(card), details_box);    
+    gtk_box_append(GTK_BOX(card), header_box);
+    gtk_box_append(GTK_BOX(card), details_box);
     
     return card;
 }
@@ -130,21 +142,20 @@ static GtkWidget *disk_screen_create_widget(InstallerScreen *screen) {
     
     if (self->widget)
         return self->widget;
-      self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
+      self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 32);
     gtk_widget_add_css_class(self->widget, "installer-screen");
     gtk_widget_set_margin_top(self->widget, 48);
-    gtk_widget_set_margin_start(self->widget, 32);
-    gtk_widget_set_margin_end(self->widget, 32);
+    gtk_widget_set_margin_start(self->widget, 40);
+    gtk_widget_set_margin_end(self->widget, 40);
       // Title section
-    GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
+    GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(title_box, 32);
     
     GtkWidget *title = gtk_label_new("Choose Installation Disk");
-    gtk_widget_add_css_class(title, "welcome-title");
+    gtk_widget_add_css_class(title, "screen-title");
     
-    GtkWidget *subtitle = gtk_label_new("Select the disk where you want to install Wave OS. All data on the selected disk will be erased.");
-    gtk_widget_add_css_class(subtitle, "welcome-subtitle");
+    GtkWidget *subtitle = gtk_label_new("Select the disk where you want to install Wave OS");
+    gtk_widget_add_css_class(subtitle, "screen-subtitle");
     gtk_label_set_wrap(GTK_LABEL(subtitle), TRUE);
     gtk_label_set_justify(GTK_LABEL(subtitle), GTK_JUSTIFY_CENTER);
     
@@ -152,53 +163,101 @@ static GtkWidget *disk_screen_create_widget(InstallerScreen *screen) {
     gtk_box_append(GTK_BOX(title_box), subtitle);
     
     // Disk grid container
-    GtkWidget *disk_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 16);
-    gtk_widget_set_halign(disk_container, GTK_ALIGN_CENTER);
+    GtkWidget *disk_section = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     
     // Create grid for disk cards
     self->disk_grid = gtk_grid_new();
     gtk_widget_add_css_class(self->disk_grid, "disk-grid");
-    gtk_grid_set_row_spacing(GTK_GRID(self->disk_grid), 16);
-    gtk_grid_set_column_spacing(GTK_GRID(self->disk_grid), 16);
+    gtk_grid_set_row_spacing(GTK_GRID(self->disk_grid), 20);
+    gtk_grid_set_column_spacing(GTK_GRID(self->disk_grid), 20);
     gtk_widget_set_halign(self->disk_grid, GTK_ALIGN_CENTER);
     
-    // Add disk cards to grid
+    // Add disk cards to grid (2 columns max for better layout)
     int col = 0, row = 0;
     for (int i = 0; mock_disks[i].path != NULL; i++) {
         GtkWidget *card = create_disk_card(&mock_disks[i], self);
         gtk_grid_attach(GTK_GRID(self->disk_grid), card, col, row, 1, 1);
         
         col++;
-        if (col >= 3) {
+        if (col >= 2) {
             col = 0;
             row++;
         }
     }
     
-    // Installation options
-    GtkWidget *options_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
-    gtk_widget_set_margin_top(options_box, 24);
-    gtk_widget_set_halign(options_box, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(disk_section), self->disk_grid);
+    
+    // Installation options in a card
+    GtkWidget *options_card = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_add_css_class(options_card, "options-card");
+    gtk_widget_set_margin_top(options_card, 16);
+    
+    // Options header
+    GtkWidget *options_header = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
+    gtk_widget_set_margin_top(options_header, 24);
+    gtk_widget_set_margin_bottom(options_header, 16);
+    gtk_widget_set_margin_start(options_header, 24);
+    gtk_widget_set_margin_end(options_header, 24);
     
     GtkWidget *options_title = gtk_label_new("Installation Options");
-    gtk_widget_add_css_class(options_title, "text-muted");
-    gtk_widget_set_margin_bottom(options_title, 8);
+    gtk_widget_add_css_class(options_title, "options-title");
+    gtk_widget_set_halign(options_title, GTK_ALIGN_START);
     
-    GtkWidget *encrypt_check = gtk_check_button_new_with_label("Encrypt the installation");
-    gtk_widget_set_margin_bottom(encrypt_check, 4);
+    gtk_box_append(GTK_BOX(options_header), options_title);
     
-    GtkWidget *format_check = gtk_check_button_new_with_label("Format disk before installation");
+    // Options list
+    GtkWidget *options_list = gtk_box_new(GTK_ORIENTATION_VERTICAL, 16);
+    gtk_widget_set_margin_start(options_list, 24);
+    gtk_widget_set_margin_end(options_list, 24);
+    gtk_widget_set_margin_bottom(options_list, 24);
+    
+    // Encryption option
+    GtkWidget *encrypt_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
+    GtkWidget *encrypt_check = gtk_check_button_new();
+    GtkWidget *encrypt_info = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+    
+    GtkWidget *encrypt_label = gtk_label_new("Encrypt the installation");
+    gtk_widget_add_css_class(encrypt_label, "option-label");
+    gtk_widget_set_halign(encrypt_label, GTK_ALIGN_START);
+    
+    GtkWidget *encrypt_desc = gtk_label_new("Protects your data with a password");
+    gtk_widget_add_css_class(encrypt_desc, "option-description");
+    gtk_widget_set_halign(encrypt_desc, GTK_ALIGN_START);
+    
+    gtk_box_append(GTK_BOX(encrypt_info), encrypt_label);
+    gtk_box_append(GTK_BOX(encrypt_info), encrypt_desc);
+    gtk_box_append(GTK_BOX(encrypt_box), encrypt_check);
+    gtk_box_append(GTK_BOX(encrypt_box), encrypt_info);
+    
+    // Format option (default checked)
+    GtkWidget *format_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
+    GtkWidget *format_check = gtk_check_button_new();
     gtk_check_button_set_active(GTK_CHECK_BUTTON(format_check), TRUE);
+    GtkWidget *format_info = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
     
-    gtk_box_append(GTK_BOX(options_box), options_title);
-    gtk_box_append(GTK_BOX(options_box), encrypt_check);
-    gtk_box_append(GTK_BOX(options_box), format_check);
+    GtkWidget *format_label = gtk_label_new("Format disk before installation");
+    gtk_widget_add_css_class(format_label, "option-label");
+    gtk_widget_set_halign(format_label, GTK_ALIGN_START);
     
-    gtk_box_append(GTK_BOX(disk_container), self->disk_grid);
-    gtk_box_append(GTK_BOX(disk_container), options_box);
+    GtkWidget *format_desc = gtk_label_new("Recommended - erases all existing data");
+    gtk_widget_add_css_class(format_desc, "option-description");
+    gtk_widget_set_halign(format_desc, GTK_ALIGN_START);
+    
+    gtk_box_append(GTK_BOX(format_info), format_label);
+    gtk_box_append(GTK_BOX(format_info), format_desc);
+    gtk_box_append(GTK_BOX(format_box), format_check);
+    gtk_box_append(GTK_BOX(format_box), format_info);
+    
+    gtk_box_append(GTK_BOX(options_list), encrypt_box);
+    gtk_box_append(GTK_BOX(options_list), format_box);
+    
+    gtk_box_append(GTK_BOX(options_card), options_header);
+    gtk_box_append(GTK_BOX(options_card), options_list);
+    
+    gtk_box_append(GTK_BOX(disk_section), options_card);
     
     gtk_box_append(GTK_BOX(self->widget), title_box);
-    gtk_box_append(GTK_BOX(self->widget), disk_container);
+    gtk_box_append(GTK_BOX(self->widget), disk_section);
     
     return self->widget;
 }

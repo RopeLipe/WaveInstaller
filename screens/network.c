@@ -74,11 +74,10 @@ static GtkWidget *create_wifi_row(const WifiNetwork *wifi) {
     
     gtk_box_append(GTK_BOX(info_box), ssid_label);
     gtk_box_append(GTK_BOX(info_box), type_label);
-    
-    // Security icon for secured networks
+      // Security icon for secured networks
     GtkWidget *right_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
     if (wifi->secured) {
-        GtkWidget *lock_icon = gtk_image_new_from_icon_name("security-high");
+        GtkWidget *lock_icon = gtk_image_new_from_icon_name("network-wireless-encrypted");
         gtk_image_set_pixel_size(GTK_IMAGE(lock_icon), 16);
         gtk_widget_add_css_class(lock_icon, "security-icon");
         gtk_box_append(GTK_BOX(right_box), lock_icon);
@@ -182,20 +181,8 @@ static GtkWidget *network_screen_create_widget(InstallerScreen *screen) {
     
     gtk_box_append(GTK_BOX(wifi_section), wifi_header);
     gtk_box_append(GTK_BOX(wifi_section), wifi_scrolled);
-    
-    // Skip option
-    GtkWidget *skip_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
-    gtk_widget_set_halign(skip_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_top(skip_box, 16);
-    
-    GtkWidget *skip_label = gtk_label_new("You can skip network configuration and set it up later.");
-    gtk_widget_add_css_class(skip_label, "text-muted");
-    
-    gtk_box_append(GTK_BOX(skip_box), skip_label);
-    
-    gtk_box_append(GTK_BOX(network_container), ethernet_card);
+      gtk_box_append(GTK_BOX(network_container), ethernet_card);
     gtk_box_append(GTK_BOX(network_container), wifi_section);
-    gtk_box_append(GTK_BOX(network_container), skip_box);
     
     gtk_box_append(GTK_BOX(self->widget), title_box);
     gtk_box_append(GTK_BOX(self->widget), network_container);
