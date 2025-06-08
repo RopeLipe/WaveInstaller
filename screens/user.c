@@ -142,9 +142,8 @@ static GtkWidget *user_screen_create_widget(InstallerScreen *screen) {
     GtkWidget *password_label = gtk_label_new("Password");
     gtk_widget_add_css_class(password_label, "form-label");
     gtk_widget_set_halign(password_label, GTK_ALIGN_START);
-    
-    self->password_entry = gtk_password_entry_new();
-    gtk_password_entry_set_placeholder_text(GTK_PASSWORD_ENTRY(self->password_entry), "Enter password");
+      self->password_entry = gtk_password_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(self->password_entry), "Enter password");
     gtk_widget_add_css_class(self->password_entry, "form-entry");
     
     gtk_box_append(GTK_BOX(password_group), password_label);
@@ -157,9 +156,8 @@ static GtkWidget *user_screen_create_widget(InstallerScreen *screen) {
     GtkWidget *confirm_label = gtk_label_new("Confirm Password");
     gtk_widget_add_css_class(confirm_label, "form-label");
     gtk_widget_set_halign(confirm_label, GTK_ALIGN_START);
-    
-    self->confirm_entry = gtk_password_entry_new();
-    gtk_password_entry_set_placeholder_text(GTK_PASSWORD_ENTRY(self->confirm_entry), "Confirm password");
+      self->confirm_entry = gtk_password_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(self->confirm_entry), "Confirm password");
     gtk_widget_add_css_class(self->confirm_entry, "form-entry");
     
     gtk_box_append(GTK_BOX(confirm_group), confirm_label);

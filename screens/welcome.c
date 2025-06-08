@@ -28,13 +28,16 @@ static GtkWidget *welcome_screen_create_widget(InstallerScreen *screen) {
     gtk_widget_set_valign(welcome_container, GTK_ALIGN_CENTER);
     gtk_widget_set_hexpand(welcome_container, TRUE);
     gtk_widget_set_vexpand(welcome_container, TRUE);
-    
-    // Wave OS Icon
+      // Wave OS Icon
     GtkWidget *icon = gtk_image_new_from_file("assets/wave-logo.png");
-    if (!gtk_image_get_pixbuf(GTK_IMAGE(icon))) {
-        // Fallback if image doesn't exist
+    // Check if file exists, if not use fallback icon
+    GFile *logo_file = g_file_new_for_path("assets/wave-logo.png");
+    if (!g_file_query_exists(logo_file, NULL)) {
+        g_object_unref(logo_file);
         icon = gtk_image_new_from_icon_name("applications-system");
         gtk_image_set_pixel_size(GTK_IMAGE(icon), 128);
+    } else {
+        g_object_unref(logo_file);
     }
     gtk_widget_add_css_class(icon, "welcome-icon");
     gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
