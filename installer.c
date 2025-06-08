@@ -181,14 +181,22 @@ static void on_next_clicked(GtkButton *button, InstallerWindow *self) {
 }
 
 static void installer_window_init(InstallerWindow *self) {
-    // Set window properties
+    // Set window properties for better window manager compatibility
     gtk_window_set_title(GTK_WINDOW(self), "Wave OS Installer");
+    
+    // Set a reasonable default size but allow resizing
     gtk_window_set_default_size(GTK_WINDOW(self), 900, 650);
-    gtk_window_set_resizable(GTK_WINDOW(self), FALSE);
+    gtk_window_set_resizable(GTK_WINDOW(self), TRUE);
+    
+    // Remove window decorations but keep it manageable
     gtk_window_set_decorated(GTK_WINDOW(self), FALSE);
     
-    // Center the window on screen
-    gtk_window_set_position(GTK_WINDOW(self), GTK_WIN_POS_CENTER);
+    // Set size constraints instead of fixed size
+    GtkRequisition min_size = {600, 500}; // Minimum usable size
+    GtkRequisition max_size = {1200, 800}; // Maximum reasonable size
+    
+    // This allows the window manager to properly handle sizing and positioning
+    // for undecorated windows, so no explicit centering code is needed
     
     // Create header bar with progress bar
     self->header_bar = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
@@ -251,8 +259,7 @@ static void installer_window_init(InstallerWindow *self) {
     gtk_widget_add_css_class(self->back_button, "back-button");
     gtk_widget_set_visible(self->back_button, FALSE);
     g_signal_connect(self->back_button, "clicked", G_CALLBACK(on_back_clicked), self);
-    
-    self->next_button = gtk_button_new_with_label("Next →");
+      self->next_button = gtk_button_new_with_label("Next");
     gtk_widget_add_css_class(self->next_button, "nav-button");
     gtk_widget_add_css_class(self->next_button, "next-button");
     g_signal_connect(self->next_button, "clicked", G_CALLBACK(on_next_clicked), self);
@@ -287,4 +294,8 @@ static void installer_window_class_init(InstallerWindowClass *klass) {
 
 InstallerWindow *installer_window_new(GtkApplication *app) {
     return g_object_new(INSTALLER_TYPE_WINDOW, "application", app, NULL);
+}
+
+static void installer_window_class_init(InstallerWindowClass *klass) {
+    // Class initialization
 }
