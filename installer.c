@@ -71,17 +71,9 @@ void installer_screen_back_clicked(InstallerScreen *self) {
 }
 
 static void update_progress_bar(InstallerWindow *self) {
-    // Update progress bar to show current step progress
+    // Update progress bar to show current step progress (no text)
     double progress = (double)(self->current_screen_type + 1) / 8.0;
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->progress_bar), progress);
-    
-    // Update progress text
-    const gchar *step_names[] = {"Welcome", "Language", "Timezone", "Keyboard", "Disk", "Network", "User", "Install"};
-    gchar *progress_text = g_strdup_printf("Step %d of 8: %s", 
-                                          self->current_screen_type + 1, 
-                                          step_names[self->current_screen_type]);
-    gtk_progress_bar_set_text(GTK_PROGRESS_BAR(self->progress_bar), progress_text);
-    g_free(progress_text);
 }
 
 static void on_back_clicked(GtkButton *button, InstallerWindow *self) {
@@ -197,23 +189,15 @@ static void installer_window_init(InstallerWindow *self) {
     
     // This allows the window manager to properly handle sizing and positioning
     // for undecorated windows, so no explicit centering code is needed
-    
-    // Create header bar with progress bar
+      // Create header bar with progress bar only
     self->header_bar = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_add_css_class(self->header_bar, "header-bar");
     
-    // Add title label
-    GtkWidget *title_label = gtk_label_new("Wave OS Installer");
-    gtk_widget_add_css_class(title_label, "header-title");
-    gtk_widget_set_halign(title_label, GTK_ALIGN_CENTER);
-    gtk_box_append(GTK_BOX(self->header_bar), title_label);
-    
-    // Create progress bar
+    // Create progress bar (no text)
     self->progress_bar = gtk_progress_bar_new();
     gtk_widget_add_css_class(self->progress_bar, "installer-progress");
-    gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(self->progress_bar), TRUE);
+    gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(self->progress_bar), FALSE);
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->progress_bar), 1.0/8.0);
-    gtk_progress_bar_set_text(GTK_PROGRESS_BAR(self->progress_bar), "Step 1 of 8: Welcome");
     gtk_box_append(GTK_BOX(self->header_bar), self->progress_bar);
     
     // Create main stack

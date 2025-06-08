@@ -57,25 +57,11 @@ static GtkWidget *create_disk_card(const DiskInfo *disk, DiskScreen *self) {
     // Store disk path in card data
     g_object_set_data_full(G_OBJECT(card), "disk-path", g_strdup(disk->path), g_free);
     g_object_set_data(G_OBJECT(card), "screen", self);
-    
-    // Add click gesture
+      // Add click gesture
     GtkGesture *click_gesture = gtk_gesture_click_new();
     gtk_gesture_single_set_button(GTK_GESTURE_SINGLE(click_gesture), GDK_BUTTON_PRIMARY);
     g_signal_connect(click_gesture, "pressed", G_CALLBACK(on_disk_card_clicked), card);
     gtk_widget_add_controller(card, GTK_EVENT_CONTROLLER(click_gesture));
-    
-    // Disk icon based on type
-    GtkWidget *icon;
-    if (g_str_has_suffix(disk->type, "SSD") || g_str_has_suffix(disk->type, "NVMe SSD")) {
-        icon = gtk_image_new_from_icon_name("drive-harddisk-solidstate");
-    } else if (disk->is_removable) {
-        icon = gtk_image_new_from_icon_name("drive-removable-media-usb");
-    } else {
-        icon = gtk_image_new_from_icon_name("drive-harddisk");
-    }
-    gtk_image_set_pixel_size(GTK_IMAGE(icon), 48);
-    gtk_widget_add_css_class(icon, "disk-icon");
-    gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
     
     // Disk name
     GtkWidget *name_label = gtk_label_new(disk->name);
@@ -101,25 +87,15 @@ static GtkWidget *create_disk_card(const DiskInfo *disk, DiskScreen *self) {
     
     // Warning if has OS
     if (disk->has_os) {
-        GtkWidget *warning_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-        gtk_widget_set_halign(warning_box, GTK_ALIGN_CENTER);
-        gtk_widget_set_margin_top(warning_box, 8);
-        
-        GtkWidget *warning_icon = gtk_image_new_from_icon_name("dialog-warning");
-        gtk_image_set_pixel_size(GTK_IMAGE(warning_icon), 16);
-        
-        GtkWidget *warning_label = gtk_label_new("Contains OS");
+        GtkWidget *warning_label = gtk_label_new("⚠ Contains OS");
         gtk_widget_add_css_class(warning_label, "disk-info");
-        
-        gtk_box_append(GTK_BOX(warning_box), warning_icon);
-        gtk_box_append(GTK_BOX(warning_box), warning_label);
-        gtk_box_append(GTK_BOX(info_box), warning_box);
+        gtk_widget_set_halign(warning_label, GTK_ALIGN_CENTER);
+        gtk_widget_set_margin_top(warning_label, 8);
+        gtk_box_append(GTK_BOX(info_box), warning_label);
     }
-    
-    gtk_box_append(GTK_BOX(info_box), size_type_label);
+      gtk_box_append(GTK_BOX(info_box), size_type_label);
     gtk_box_append(GTK_BOX(info_box), path_label);
     
-    gtk_box_append(GTK_BOX(card), icon);
     gtk_box_append(GTK_BOX(card), name_label);
     gtk_box_append(GTK_BOX(card), info_box);
     
@@ -134,15 +110,10 @@ static GtkWidget *disk_screen_create_widget(InstallerScreen *screen) {
     
     self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     gtk_widget_add_css_class(self->widget, "installer-screen");
-    
-    // Title section
+      // Title section
     GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);
     gtk_widget_set_margin_bottom(title_box, 32);
-    
-    GtkWidget *icon = gtk_image_new_from_icon_name("drive-harddisk");
-    gtk_image_set_pixel_size(GTK_IMAGE(icon), 64);
-    gtk_widget_set_margin_bottom(icon, 16);
     
     GtkWidget *title = gtk_label_new("Choose Installation Disk");
     gtk_widget_add_css_class(title, "welcome-title");
@@ -152,7 +123,6 @@ static GtkWidget *disk_screen_create_widget(InstallerScreen *screen) {
     gtk_label_set_wrap(GTK_LABEL(subtitle), TRUE);
     gtk_label_set_justify(GTK_LABEL(subtitle), GTK_JUSTIFY_CENTER);
     
-    gtk_box_append(GTK_BOX(title_box), icon);
     gtk_box_append(GTK_BOX(title_box), title);
     gtk_box_append(GTK_BOX(title_box), subtitle);
     

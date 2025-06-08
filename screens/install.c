@@ -96,20 +96,13 @@ static GtkWidget *install_screen_create_widget(InstallerScreen *screen) {
     
     self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_add_css_class(self->widget, "installer-screen");
-    
-    // Main install container
+      // Main install container
     GtkWidget *install_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 32);
     gtk_widget_add_css_class(install_container, "install-container");
     gtk_widget_set_halign(install_container, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(install_container, GTK_ALIGN_CENTER);
     gtk_widget_set_hexpand(install_container, TRUE);
     gtk_widget_set_vexpand(install_container, TRUE);
-    
-    // Install icon
-    self->install_icon = gtk_image_new_from_icon_name("system-software-install");
-    gtk_image_set_pixel_size(GTK_IMAGE(self->install_icon), 64);
-    gtk_widget_add_css_class(self->install_icon, "install-icon");
-    gtk_widget_set_halign(self->install_icon, GTK_ALIGN_CENTER);
     
     // Status title
     self->status_label = gtk_label_new("Preparing to install Wave OS...");
@@ -155,9 +148,7 @@ static GtkWidget *install_screen_create_widget(InstallerScreen *screen) {
     
     gtk_box_append(GTK_BOX(info_box), info_title);
     gtk_box_append(GTK_BOX(info_box), features_box);
-    
-    // Add all elements to main container
-    gtk_box_append(GTK_BOX(install_container), self->install_icon);
+      // Add all elements to main container
     gtk_box_append(GTK_BOX(install_container), self->status_label);
     gtk_box_append(GTK_BOX(install_container), self->progress_bar);
     gtk_box_append(GTK_BOX(install_container), self->current_task_label);

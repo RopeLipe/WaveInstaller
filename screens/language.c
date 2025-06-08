@@ -15,16 +15,16 @@ typedef struct {
 } LanguageInfo;
 
 static const LanguageInfo languages[] = {
-    {"en_US", "English", "English", "🇺🇸"},
-    {"es_ES", "Spanish", "Español", "🇪🇸"},
-    {"fr_FR", "French", "Français", "🇫🇷"},
-    {"de_DE", "German", "Deutsch", "🇩🇪"},
-    {"it_IT", "Italian", "Italiano", "🇮🇹"},
-    {"pt_BR", "Portuguese (Brazil)", "Português (Brasil)", "🇧🇷"},
-    {"ru_RU", "Russian", "Русский", "🇷🇺"},
-    {"zh_CN", "Chinese (Simplified)", "中文 (简体)", "🇨🇳"},
-    {"ja_JP", "Japanese", "日本語", "🇯🇵"},
-    {"ko_KR", "Korean", "한국어", "🇰🇷"},
+    {"en_US", "English", "English", ""},
+    {"es_ES", "Spanish", "Español", ""},
+    {"fr_FR", "French", "Français", ""},
+    {"de_DE", "German", "Deutsch", ""},
+    {"it_IT", "Italian", "Italiano", ""},
+    {"pt_BR", "Portuguese (Brazil)", "Português (Brasil)", ""},
+    {"ru_RU", "Russian", "Русский", ""},
+    {"zh_CN", "Chinese (Simplified)", "中文 (简体)", ""},
+    {"ja_JP", "Japanese", "日本語", ""},
+    {"ko_KR", "Korean", "한국어", ""},
     {NULL, NULL, NULL, NULL}
 };
 
@@ -52,10 +52,6 @@ static GtkWidget *create_language_row(const LanguageInfo *lang) {
     gtk_widget_set_margin_top(row, 12);
     gtk_widget_set_margin_bottom(row, 12);
     
-    // Flag emoji as icon
-    GtkWidget *flag_label = gtk_label_new(lang->flag_icon);
-    gtk_widget_set_margin_end(flag_label, 12);
-    
     // Language names container
     GtkWidget *names_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
     
@@ -73,7 +69,6 @@ static GtkWidget *create_language_row(const LanguageInfo *lang) {
         gtk_box_append(GTK_BOX(names_box), native_label);
     }
     
-    gtk_box_append(GTK_BOX(row), flag_label);
     gtk_box_append(GTK_BOX(row), names_box);
     
     return row;
@@ -87,15 +82,10 @@ static GtkWidget *language_screen_create_widget(InstallerScreen *screen) {
     
     self->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     gtk_widget_add_css_class(self->widget, "installer-screen");
-    
-    // Title section
+      // Title section
     GtkWidget *title_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_widget_set_halign(title_box, GTK_ALIGN_CENTER);
     gtk_widget_set_margin_bottom(title_box, 32);
-    
-    GtkWidget *icon = gtk_image_new_from_icon_name("preferences-desktop-locale");
-    gtk_image_set_pixel_size(GTK_IMAGE(icon), 64);
-    gtk_widget_set_margin_bottom(icon, 16);
     
     GtkWidget *title = gtk_label_new("Choose Your Language");
     gtk_widget_add_css_class(title, "welcome-title");
@@ -105,7 +95,6 @@ static GtkWidget *language_screen_create_widget(InstallerScreen *screen) {
     gtk_label_set_wrap(GTK_LABEL(subtitle), TRUE);
     gtk_label_set_justify(GTK_LABEL(subtitle), GTK_JUSTIFY_CENTER);
     
-    gtk_box_append(GTK_BOX(title_box), icon);
     gtk_box_append(GTK_BOX(title_box), title);
     gtk_box_append(GTK_BOX(title_box), subtitle);
     
