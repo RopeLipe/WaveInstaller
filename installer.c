@@ -7,7 +7,9 @@ struct _InstallerWindow {
     GtkWidget *header_bar;
     GtkWidget *back_button;
     GtkWidget *next_button;
-    GtkWidget *progress_bar;
+    GtkWidget *step_indicator;
+    GtkWidget *navigation_box;
+    GtkWidget *step_circles[8];
     
     InstallerScreen *current_screen;
     ScreenType current_screen_type;
@@ -69,6 +71,21 @@ void installer_screen_back_clicked(InstallerScreen *self) {
         iface->back_clicked(self);
 }
 
+static void update_step_indicator(InstallerWindow *self) {
+    // Update step circles to show current progress
+    for (int i = 0; i < 8; i++) {
+        GtkWidget *circle = self->step_circles[i];
+        gtk_widget_remove_css_class(circle, "current");
+        gtk_widget_remove_css_class(circle, "completed");
+        
+        if (i < self->current_screen_type) {
+            gtk_widget_add_css_class(circle, "completed");
+        } else if (i == self->current_screen_type) {
+            gtk_widget_add_css_class(circle, "current");
+        }
+    }
+}
+
 static void on_back_clicked(GtkButton *button, InstallerWindow *self) {
     if (self->current_screen_type > SCREEN_WELCOME) {
         installer_screen_back_clicked(self->current_screen);
@@ -106,12 +123,10 @@ static void on_back_clicked(GtkButton *button, InstallerWindow *self) {
                 self->current_screen = self->user_screen;
                 break;
             default:
-                break;
-        }
+                break;        }
         
         self->current_screen_type = prev_screen;
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->progress_bar), 
-                                    (double)self->current_screen_type / (SCREEN_INSTALL));
+        update_step_indicator(self);
         
         // Update button visibility
         gtk_widget_set_visible(self->back_button, self->current_screen_type > SCREEN_WELCOME);
@@ -159,12 +174,10 @@ static void on_next_clicked(GtkButton *button, InstallerWindow *self) {
                 gtk_widget_set_visible(self->next_button, FALSE);
                 break;
             default:
-                break;
-        }
+                break;        }
         
         self->current_screen_type = next_screen;
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->progress_bar), 
-                                    (double)self->current_screen_type / (SCREEN_INSTALL));
+        update_step_indicator(self);
         
         // Update button visibility
         gtk_widget_set_visible(self->back_button, self->current_screen_type > SCREEN_WELCOME);
@@ -178,30 +191,43 @@ static void installer_window_init(InstallerWindow *self) {
     gtk_window_set_resizable(GTK_WINDOW(self), FALSE);
     gtk_window_set_decorated(GTK_WINDOW(self), FALSE);
     
-    // Create header bar (custom since we disabled decorations)
+    // Create header bar with step indicator
     self->header_bar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
     gtk_widget_add_css_class(self->header_bar, "header-bar");
     
-    // Progress bar
-    self->progress_bar = gtk_progress_bar_new();
-    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(self->progress_bar), 0.0);
-    gtk_widget_set_hexpand(self->progress_bar, TRUE);
-    gtk_widget_add_css_class(self->progress_bar, "installer-progress");
+    // Circular step indicator
+    self->step_indicator = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 16);
+    gtk_widget_add_css_class(self->step_indicator, "step-indicator");
+    gtk_widget_set_halign(self->step_indicator, GTK_ALIGN_CENTER);
+    gtk_widget_set_hexpand(self->step_indicator, TRUE);
     
-    // Navigation buttons
-    self->back_button = gtk_button_new_with_label("Back");
-    gtk_widget_add_css_class(self->back_button, "navigation-button");
-    gtk_widget_set_visible(self->back_button, FALSE);
-    g_signal_connect(self->back_button, "clicked", G_CALLBACK(on_back_clicked), self);
+    // Create step circles
+    const gchar *step_names[] = {"Welcome", "Language", "Timezone", "Keyboard", "Disk", "Network", "User", "Install"};
+    for (int i = 0; i < 8; i++) {
+        GtkWidget *step_container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+        
+        GtkWidget *step_circle = gtk_label_new(g_strdup_printf("%d", i + 1));
+        gtk_widget_add_css_class(step_circle, "step-circle");
+        if (i == 0) gtk_widget_add_css_class(step_circle, "current");
+        gtk_widget_set_size_request(step_circle, 32, 32);
+        
+        // Store reference to circle for updates
+        self->step_circles[i] = step_circle;
+        
+        gtk_box_append(GTK_BOX(step_container), step_circle);
+        gtk_box_append(GTK_BOX(self->step_indicator), step_container);
+        
+        // Add connector line (except for last step)
+        if (i < 7) {
+            GtkWidget *connector = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+            gtk_widget_add_css_class(connector, "step-connector");
+            gtk_widget_set_hexpand(connector, TRUE);
+            gtk_widget_set_size_request(connector, 40, 2);
+            gtk_box_append(GTK_BOX(self->step_indicator), connector);
+        }
+    }
     
-    self->next_button = gtk_button_new_with_label("Next");
-    gtk_widget_add_css_class(self->next_button, "navigation-button");
-    gtk_widget_add_css_class(self->next_button, "suggested-action");
-    g_signal_connect(self->next_button, "clicked", G_CALLBACK(on_next_clicked), self);
-    
-    gtk_box_append(GTK_BOX(self->header_bar), self->progress_bar);
-    gtk_box_append(GTK_BOX(self->header_bar), self->back_button);
-    gtk_box_append(GTK_BOX(self->header_bar), self->next_button);
+    gtk_box_append(GTK_BOX(self->header_bar), self->step_indicator);
     
     // Create main stack
     self->stack = gtk_stack_new();
@@ -241,12 +267,38 @@ static void installer_window_init(InstallerWindow *self) {
     self->current_screen_type = SCREEN_WELCOME;
     gtk_stack_set_visible_child_name(GTK_STACK(self->stack), "welcome");
     
-    // Create main layout
+    // Create navigation buttons    self->back_button = gtk_button_new_with_label("Back");
+    gtk_widget_add_css_class(self->back_button, "nav-button");
+    gtk_widget_add_css_class(self->back_button, "back-button");
+    gtk_widget_set_visible(self->back_button, FALSE);
+    g_signal_connect(self->back_button, "clicked", G_CALLBACK(on_back_clicked), self);
+      self->next_button = gtk_button_new_with_label("Next");
+    gtk_widget_add_css_class(self->next_button, "nav-button");
+    gtk_widget_add_css_class(self->next_button, "next-button");
+    g_signal_connect(self->next_button, "clicked", G_CALLBACK(on_next_clicked), self);
+    
+    // Create navigation box (bottom right)
+    self->navigation_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
+    gtk_widget_add_css_class(self->navigation_box, "navigation-box");
+    gtk_widget_set_halign(self->navigation_box, GTK_ALIGN_END);
+    gtk_widget_set_valign(self->navigation_box, GTK_ALIGN_END);
+    gtk_widget_set_margin_end(self->navigation_box, 24);
+    gtk_widget_set_margin_bottom(self->navigation_box, 24);
+    
+    gtk_box_append(GTK_BOX(self->navigation_box), self->back_button);
+    gtk_box_append(GTK_BOX(self->navigation_box), self->next_button);
+    
+    // Create main layout with overlay for navigation
     GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(main_box), self->header_bar);
     gtk_box_append(GTK_BOX(main_box), self->stack);
     
-    gtk_window_set_child(GTK_WINDOW(self), main_box);
+    // Create overlay to position navigation buttons
+    GtkWidget *overlay = gtk_overlay_new();
+    gtk_overlay_set_child(GTK_OVERLAY(overlay), main_box);
+    gtk_overlay_add_overlay(GTK_OVERLAY(overlay), self->navigation_box);
+    
+    gtk_window_set_child(GTK_WINDOW(self), overlay);
 }
 
 static void installer_window_class_init(InstallerWindowClass *klass) {
