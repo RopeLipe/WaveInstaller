@@ -69,7 +69,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
     // Load CSS
     GtkCssProvider *css_provider = gtk_css_provider_new();
-    GFile *css_file = g_file_new_for_path("/usr/bin/WaveInstaller/css/styles.css"); // Create a GFile object for the CSS path
+    GFile *css_file = g_file_new_for_path("css/styles.css"); // Create a GFile object for the CSS path
     GError *error = NULL;
 
     gtk_css_provider_load_from_file(css_provider, css_file, &error); // Load CSS using GFile

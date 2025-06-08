@@ -16,23 +16,30 @@ window:dark {
 /* --- General Widget Styling --- */
 
 button {
-    border-radius: 8px; /* Rounded corners for buttons */
-    background-color: #0078d4; /* Blue accent */
-    color: white;
-    padding: 10px 18px;
-    font-size: 1em;
-    border: none;
-    min-width: 100px;
-    transition: background-color 0.2s ease-in-out;
+    /* Reset theme styles that might interfere */
+    background-image: none !important; /* Crucial to override gradients */
+    border: none !important; /* Reset theme borders if they affect appearance */
+    border-radius: 8px !important; /* Rounded corners for buttons */
+
+    /* Your desired styles */
+    background-color: #0078d4 !important; /* Blue accent */
+    color: white !important; /* Text color */
+    padding: 10px 18px !important;
+    font-size: 1em !important;
+    min-width: 100px !important;
+    transition: background-color 0.2s ease-in-out !important;
 }
 
 button:hover {
-    background-color: #005a9e; /* Darker blue on hover */
+    background-image: none !important; /* Also for hover state */
+    background-color: #005a9e !important; /* Darker blue on hover */
+    color: white !important;
 }
 
 button:disabled {
-    background-color: #777777;
-    color: #aaaaaa;
+    background-image: none !important;
+    background-color: #777777 !important;
+    color: #aaaaaa !important;
 }
 
 /* Specific button types */
@@ -41,10 +48,10 @@ button:disabled {
 /* } */
 
 .back-button {
-    background-color: #6c757d; /* A slightly different shade for back buttons */
+    background-color: #6c757d !important; /* A slightly different shade for back buttons */
 }
 .back-button:hover {
-    background-color: #5a6268;
+    background-color: #5a6268 !important;
 }
 
 label {

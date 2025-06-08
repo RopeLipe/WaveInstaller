@@ -39,7 +39,7 @@ GtkWidget *create_welcome_screen(void) {
     gtk_widget_set_margin_bottom(title_label, 10);
     gtk_box_append(GTK_BOX(box), title_label);
 
-    message_label = gtk_label_new("We're excited to help you set up your new system.\\nFollow the steps to configure and install.");
+    message_label = gtk_label_new("We're excited to help you set up your new system.\nFollow the steps to configure and install.");
     gtk_label_set_justify(GTK_LABEL(message_label), GTK_JUSTIFY_CENTER);
     gtk_widget_add_css_class(message_label, "message-label"); // CSS class for styling
     gtk_widget_set_margin_bottom(message_label, 30);
