@@ -1,115 +1,151 @@
 #include "install_screen.h"
-#include "user_screen.h" // To navigate back (though less common at this stage)
-#include <gtk/gtk.h>
+#include "../utils/utils.h"
 
-// Forward declarations (if any navigation is added later)
-extern void switch_screen(GtkWidget *new_screen);
-// extern void navigate_to_some_other_screen(GtkButton *button, gpointer user_data); // Example
-extern void navigate_to_user_screen(GtkButton *button, gpointer user_data); // If a back button is desired
+// This would interact with the backend installer process
+static GtkWidget *progress_bar;
+static GtkWidget *status_label;
+static GtkWidget *log_view_scrolled_window;
+static GtkWidget *log_text_view;
+static GtkTextBuffer *log_buffer;
+static GtkWidget *finish_button;
+static GtkApplication *app_instance; // To close the app
 
-// Placeholder: In a real installer, this function would be called when the installation starts.
-// It would then update the progress bar and status label based on actual installation steps.
+// Simulate installation progress
 static gboolean update_progress(gpointer user_data) {
-    GtkProgressBar *progress_bar = GTK_PROGRESS_BAR(user_data);
-    double current_fraction = gtk_progress_bar_get_fraction(progress_bar);
-    double new_fraction = current_fraction + 0.01; // Increment by 1%
+    double fraction = gtk_progress_bar_get_fraction(GTK_PROGRESS_BAR(progress_bar));
+    fraction += 0.05; // Increment progress
 
-    if (new_fraction > 1.0) {
-        new_fraction = 1.0;
-        gtk_progress_bar_set_text(progress_bar, "Installation Complete!");
-        // Here you might enable a "Finish" button or auto-close the installer
-        // For now, we just stop the timer.
+    if (fraction > 1.0) {
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), 1.0);
+        gtk_label_set_text(GTK_LABEL(status_label), "Installation Complete!");
+        gtk_widget_set_sensitive(finish_button, TRUE);
+
+        // Append to log
+        GtkTextIter end;
+        gtk_text_buffer_get_end_iter(log_buffer, &end);
+        gtk_text_buffer_insert(log_buffer, &end, "\nINFO: All tasks finished successfully.\n", -1);
         return G_SOURCE_REMOVE; // Stop the timer
     }
 
-    gtk_progress_bar_set_fraction(progress_bar, new_fraction);
-    char buffer[100];
-    sprintf(buffer, "Installing... %.0f%%", new_fraction * 100);
-    gtk_progress_bar_set_text(progress_bar, buffer);
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), fraction);
 
-    return G_SOURCE_CONTINUE; // Keep timer running
+    // Update status label and log (example messages)
+    GtkTextIter end_iter;
+    gtk_text_buffer_get_end_iter(log_buffer, &end_iter);
+    if (fraction > 0.8 && fraction < 0.85) {
+        gtk_label_set_text(GTK_LABEL(status_label), "Finalizing setup...");
+        gtk_text_buffer_insert(log_buffer, &end_iter, "INFO: Finalizing system configuration...\n", -1);
+    } else if (fraction > 0.5 && fraction < 0.55) {
+        gtk_label_set_text(GTK_LABEL(status_label), "Installing bootloader...");
+        gtk_text_buffer_insert(log_buffer, &end_iter, "INFO: Installing GRUB bootloader...\n", -1);
+    } else if (fraction > 0.2 && fraction < 0.25) {
+        gtk_label_set_text(GTK_LABEL(status_label), "Copying system files...");
+        gtk_text_buffer_insert(log_buffer, &end_iter, "INFO: Copying base system files...\n", -1);
+    }
+    // Auto-scroll log view
+    GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(log_view_scrolled_window));
+    gtk_adjustment_set_value(vadj, gtk_adjustment_get_upper(vadj));
+
+    return G_SOURCE_CONTINUE; // Continue timer
 }
 
-// This function would be called when the "Next" button from the user_screen is clicked.
-// Or, if there's a summary screen before this, then from that summary screen.
-void start_actual_installation(GtkWidget *progress_bar) {
-    // Disable back button if there is one, or other navigation controls.
-    // gtk_widget_set_sensitive(back_button_widget, FALSE);
-
+static void start_installation_simulation(GtkWidget *widget, gpointer user_data) {
+    gtk_widget_set_sensitive(widget, FALSE); // Disable the "Start Install" button (if it were previous screen's next)
+    gtk_label_set_text(GTK_LABEL(status_label), "Starting installation...");
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), 0.0);
-    gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), "Starting installation...");
+    gtk_widget_set_visible(log_view_scrolled_window, TRUE);
 
-    // Simulate installation progress with a timer
-    // In a real installer, this would be driven by actual installation events/steps.
-    g_timeout_add(100, update_progress, progress_bar); // Update every 100ms
+    // Clear previous log
+    gtk_text_buffer_set_text(log_buffer, "INFO: Installation process started.\n", -1);
 
-    // TODO: Here you would trigger the backend installation logic.
-    // This is where the core installation tasks (copying files, setting up bootloader, etc.) happen.
-    // The backend would need to communicate its progress back to the UI to update the progress bar realistically.
+    g_timeout_add(500, update_progress, NULL); // Update every 500ms
 }
 
-GtkWidget *create_install_screen(void) {
-    GtkWidget *box;
-    GtkWidget *title_label;
-    GtkWidget *summary_label; // Optional: To show a summary of selections
-    GtkWidget *progress_bar;
-    GtkWidget *status_label; // For detailed status messages below progress bar
-    GtkWidget *buttons_box; // For Finish/Close or Restart buttons
-    // GtkWidget *back_button; // Usually disabled or hidden at this stage
+static void on_finish_button_clicked(GtkWidget *widget, gpointer user_data) {
+    if(app_instance) {
+        g_application_quit(G_APPLICATION(app_instance));
+    }
+}
 
-    box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+GtkWidget* create_install_screen(GtkApplication *app) {
+    app_instance = app;
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_vexpand(box, TRUE);
+    gtk_widget_set_hexpand(box, TRUE);
     gtk_widget_set_halign(box, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_top(box, 30);
-    gtk_widget_add_css_class(box, "install-screen-box");
+    gtk_widget_add_css_class(box, "content-box");
 
-    title_label = gtk_label_new("Installation Progress");
-    gtk_widget_add_css_class(title_label, "title-label");
-    gtk_widget_set_margin_bottom(title_label, 20);
-    gtk_box_append(GTK_BOX(box), title_label);
+    GtkWidget *icon = create_image_from_file("install_icon.png", 64, 64);
+    if (icon) {
+        gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
+        gtk_box_append(GTK_BOX(box), icon);
+    } else {
+        gtk_box_append(GTK_BOX(box), gtk_label_new("(Install Icon)"));
+    }
 
-    // Optional: A brief summary of what will be installed/configured
-    // summary_label = gtk_label_new("Summary: Installing to /dev/sda, User: john, Lang: EN...");
-    // gtk_widget_set_margin_bottom(summary_label, 15);
-    // gtk_box_append(GTK_BOX(box), summary_label);
+    GtkWidget *title = gtk_label_new("Installing WaveOS"); // Or your product name
+    gtk_widget_add_css_class(title, "welcome-subtitle");
+    gtk_widget_set_halign(title, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(box), title);
 
-    progress_bar = gtk_progress_bar_new();
-    gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(progress_bar), TRUE);
-    gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), "Preparing to install...");
-    gtk_widget_set_size_request(progress_bar, 400, -1); // Set a decent width
-    gtk_widget_set_margin_start(progress_bar, 50);
-    gtk_widget_set_margin_end(progress_bar, 50);
-    gtk_widget_set_margin_bottom(progress_bar, 10);
-    gtk_widget_add_css_class(progress_bar, "install-progress-bar");
-    gtk_box_append(GTK_BOX(box), progress_bar);
-
-    status_label = gtk_label_new("Please wait while the system is being installed.");
-    gtk_widget_add_css_class(status_label, "status-label");
-    gtk_widget_set_margin_bottom(status_label, 30);
+    status_label = gtk_label_new("Ready to install. This process cannot be undone.");
+    gtk_widget_set_halign(status_label, GTK_ALIGN_CENTER);
+    gtk_label_set_wrap(GTK_LABEL(status_label), TRUE);
     gtk_box_append(GTK_BOX(box), status_label);
 
-    // Placeholder for buttons like "Finish" or "Restart" that would appear upon completion/failure
-    buttons_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_widget_set_halign(buttons_box, GTK_ALIGN_CENTER);
-    // Example: Add a finish button (initially insensitive or hidden)
-    // GtkWidget *finish_button = gtk_button_new_with_label("Finish");
-    // gtk_widget_set_sensitive(finish_button, FALSE);
-    // g_signal_connect_swapped(finish_button, "clicked", G_CALLBACK(gtk_window_destroy), main_window_ptr); // Assuming main_window_ptr is accessible
-    // gtk_box_append(GTK_BOX(buttons_box), finish_button);
-    gtk_box_append(GTK_BOX(box), buttons_box);
+    progress_bar = gtk_progress_bar_new();
+    gtk_widget_set_margin_top(progress_bar, 10);
+    gtk_widget_set_margin_bottom(progress_bar, 10);
+    gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(progress_bar), TRUE);
+    gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), "0%");
+    g_signal_connect(progress_bar, "notify::fraction", 
+        G_CALLBACK(+[](GObject *object, GParamSpec *pspec, gpointer user_data) {
+            char text[10];
+            g_snprintf(text, sizeof(text), "%.0f%%", gtk_progress_bar_get_fraction(GTK_PROGRESS_BAR(object)) * 100);
+            gtk_progress_bar_set_text(GTK_PROGRESS_BAR(object), text);
+        }), NULL);
+    gtk_box_append(GTK_BOX(box), progress_bar);
 
-    // IMPORTANT: Trigger the actual installation process
-    // This should ideally happen *after* the screen is shown and ready.
-    // For simplicity, we call it here. A better way is to connect to a signal like "map" or use g_idle_add.
-    // We pass the progress_bar to the function that will manage its updates.
-    // In a real app, you might pass more context or use a dedicated installation manager object.
-    start_actual_installation(progress_bar); 
-    // Note: If you want a "Back" button here, it's unusual but possible.
-    // It would typically only be active *before* installation starts.
-    // GtkWidget *back_button = gtk_button_new_with_label("Back");
-    // gtk_widget_add_css_class(back_button, "back-button");
-    // g_signal_connect(back_button, "clicked", G_CALLBACK(navigate_to_user_screen), NULL);
-    // gtk_box_append(GTK_BOX(buttons_box), back_button); // Add to buttons_box if needed
+    // Log view (initially hidden or empty)
+    log_text_view = gtk_text_view_new();
+    gtk_text_view_set_editable(GTK_TEXT_VIEW(log_text_view), FALSE);
+    gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(log_text_view), FALSE);
+    gtk_widget_add_css_class(log_text_view, "code"); // For monospaced font if defined in CSS
+    log_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(log_text_view));
+
+    log_view_scrolled_window = gtk_scrolled_window_new();
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(log_view_scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_size_request(log_view_scrolled_window, -1, 150); // Height of 150px
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(log_view_scrolled_window), log_text_view);
+    gtk_widget_set_vexpand(log_view_scrolled_window, FALSE); // Don't let it expand indefinitely
+    gtk_widget_set_visible(log_view_scrolled_window, FALSE); // Initially hidden
+    gtk_box_append(GTK_BOX(box), log_view_scrolled_window);
+
+    GtkWidget *spacer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_vexpand(spacer, TRUE);
+    gtk_box_append(GTK_BOX(box), spacer);
+
+    // In a real scenario, the "Next" button from the previous screen (User Config)
+    // would trigger the installation. Here, we simulate it being part of this screen's logic.
+    // For now, the installation starts when this screen becomes visible (handled in main.c or by a signal).
+    // We add a finish button that is enabled when installation completes.
+
+    finish_button = gtk_button_new_with_label("Finish & Reboot"); // Or "Finish & Close"
+    gtk_widget_set_sensitive(finish_button, FALSE); // Enabled upon completion
+    g_signal_connect(finish_button, "clicked", G_CALLBACK(on_finish_button_clicked), NULL);
+    gtk_widget_set_halign(finish_button, GTK_ALIGN_END);
+    gtk_widget_set_margin_top(finish_button, 10);
+    gtk_box_append(GTK_BOX(box), finish_button);
+
+    // Automatically start the installation simulation when this screen is shown.
+    // This is a simple way to trigger it. A more robust way would be a signal from the stack switch.
+    // For now, we will call start_installation_simulation directly when the screen is created
+    // or rely on the main application logic to call a function to start it.
+    // Let's assume the `main.c` will call a function like `trigger_install_start()`
+    // when this screen is made visible if we don't want it to start immediately.
+    // For this example, let's add a small delay then start.
+    g_timeout_add_seconds(1, (GSourceFunc)start_installation_simulation, NULL); // Start after 1 second
 
     return box;
 }

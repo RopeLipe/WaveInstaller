@@ -1,108 +1,123 @@
 #include <gtk/gtk.h>
-#include "welcome_screen.h"
-#include "language_screen.h"
-#include "timezone_screen.h"
-#include "keyboard_screen.h"
-#include "disk_screen.h"
-#include "network_screen.h"
-#include "user_screen.h"
-#include "install_screen.h"
+#include "screens/welcome_screen.h"
+#include "screens/language_screen.h"
+#include "screens/timezone_screen.h"
+#include "screens/keyboard_screen.h"
+#include "screens/disk_selection_screen.h"
+#include "screens/network_config_screen.h"
+#include "screens/user_config_screen.h"
+#include "screens/install_screen.h"
+#include "utils/utils.h"
 
-static GtkWidget *main_window;
-static GtkWidget *main_stack;
+static GtkWidget *stack;
+static GtkApplication *app;
 
-// Function to switch screens
-static void switch_screen(GtkWidget *new_screen) {
-    GtkWidget *current_screen = gtk_stack_get_visible_child(GTK_STACK(main_stack));
-    if (current_screen) {
-        gtk_stack_remove(GTK_STACK(main_stack), current_screen);
+static void on_next_screen(GtkWidget *widget, gpointer user_data) {
+    const char *current_screen_name = gtk_stack_get_visible_child_name(GTK_STACK(stack));
+    if (g_strcmp0(current_screen_name, "welcome") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "language");
+    } else if (g_strcmp0(current_screen_name, "language") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "timezone");
+    } else if (g_strcmp0(current_screen_name, "timezone") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "keyboard");
+    } else if (g_strcmp0(current_screen_name, "keyboard") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "disk_selection");
+    } else if (g_strcmp0(current_screen_name, "disk_selection") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "network_config");
+    } else if (g_strcmp0(current_screen_name, "network_config") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "user_config");
+    } else if (g_strcmp0(current_screen_name, "user_config") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "install");
     }
-    gtk_stack_add_named(GTK_STACK(main_stack), new_screen, "current_screen");
-    gtk_stack_set_visible_child_name(GTK_STACK(main_stack), "current_screen");
 }
 
-// Placeholder navigation functions (to be implemented in each screen's C file)
-void navigate_to_language_screen(GtkButton *button, gpointer user_data) {
-    switch_screen(create_language_screen());
+static void on_prev_screen(GtkWidget *widget, gpointer user_data) {
+    const char *current_screen_name = gtk_stack_get_visible_child_name(GTK_STACK(stack));
+    if (g_strcmp0(current_screen_name, "language") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "welcome");
+    } else if (g_strcmp0(current_screen_name, "timezone") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "language");
+    } else if (g_strcmp0(current_screen_name, "keyboard") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "timezone");
+    } else if (g_strcmp0(current_screen_name, "disk_selection") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "keyboard");
+    } else if (g_strcmp0(current_screen_name, "network_config") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "disk_selection");
+    } else if (g_strcmp0(current_screen_name, "user_config") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "network_config");
+    } else if (g_strcmp0(current_screen_name, "install") == 0) {
+        gtk_stack_set_visible_child_name(GTK_STACK(stack), "user_config");
+    }
 }
 
-void navigate_to_timezone_screen(GtkButton *button, gpointer user_data) {
-    switch_screen(create_timezone_screen());
-}
-
-void navigate_to_welcome_screen(GtkButton *button, gpointer user_data) {
-    switch_screen(create_welcome_screen());
-}
-
-void navigate_to_keyboard_screen(GtkButton *button, gpointer user_data) {
-    switch_screen(create_keyboard_screen());
-}
-
-void navigate_to_disk_screen(GtkButton *button, gpointer user_data) {
-    switch_screen(create_disk_screen());
-}
-
-void navigate_to_network_screen(GtkButton *button, gpointer user_data) {
-    switch_screen(create_network_screen());
-}
-
-void navigate_to_user_screen(GtkButton *button, gpointer user_data) {
-    switch_screen(create_user_screen());
-}
-
-void navigate_to_install_screen(GtkButton *button, gpointer user_data) {
-    switch_screen(create_install_screen());
-}
-
-// Add other navigation functions similarly...
 
 static void activate(GtkApplication *app, gpointer user_data) {
-    main_window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(main_window), "Wave Installer");
-    gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
-    gtk_window_set_decorated(GTK_WINDOW(main_window), FALSE); // No title bar
+    GtkWidget *window;
+    GtkWidget *main_box;
+    GtkWidget *navigation_box;
+    GtkWidget *prev_button;
+    GtkWidget *next_button;
 
-    // Create the stack to hold different screens
-    main_stack = gtk_stack_new();
-    gtk_stack_set_transition_type(GTK_STACK(main_stack), GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
-    gtk_window_set_child(GTK_WINDOW(main_window), main_stack);
+    // Create the main window
+    window = gtk_application_window_new(app);
+    gtk_window_set_title(GTK_WINDOW(window), "Wave Installer");
+    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+    gtk_window_set_decorated(GTK_WINDOW(window), FALSE); // No title bar
 
-    // Load CSS
+    // Apply CSS
     GtkCssProvider *css_provider = gtk_css_provider_new();
-    GFile *css_file = g_file_new_for_path("css/styles.css"); // Create a GFile object for the CSS path
-    GError *error = NULL;
+    gtk_css_provider_load_from_path(css_provider, "/usr/bin/WaveInstaller/assets/css/style.css");
+    gtk_style_context_add_provider_for_display(
+        gdk_display_get_default(),
+        GTK_STYLE_PROVIDER(css_provider),
+        GTK_STYLE_PROVIDER_PRIORITY_USER);
 
-    gtk_css_provider_load_from_file(css_provider, css_file, &error); // Load CSS using GFile
-    g_object_unref(css_file); // Release the GFile object
+    main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_halign(main_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(main_box, GTK_ALIGN_CENTER);
+    gtk_window_set_child(GTK_WINDOW(window), main_box);
 
-    if (error) {
-        g_warning("Failed to load CSS file 'css/styles.css': %s", error->message);
-        g_error_free(error);
-    } else {
-        gtk_style_context_add_provider_for_display(
-            gdk_display_get_default(),
-            GTK_STYLE_PROVIDER(css_provider),
-            GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
-        g_message("CSS file 'css/styles.css' loaded successfully."); // Optional: success message
-    }
-    g_object_unref(css_provider);
+    // Create the stack for screens
+    stack = gtk_stack_new();
+    gtk_stack_set_transition_type(GTK_STACK(stack), GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT);
+    gtk_box_append(GTK_BOX(main_box), stack);
 
+    // Create and add screens
+    GtkWidget *welcome_screen = create_welcome_screen(on_next_screen);
+    gtk_stack_add_named(GTK_STACK(stack), welcome_screen, "welcome");
 
-    // Start with the welcome screen
-    switch_screen(create_welcome_screen());
+    GtkWidget *language_screen = create_language_screen(on_next_screen, on_prev_screen);
+    gtk_stack_add_named(GTK_STACK(stack), language_screen, "language");
 
-    gtk_widget_show(main_window);
+    GtkWidget *timezone_screen = create_timezone_screen(on_next_screen, on_prev_screen);
+    gtk_stack_add_named(GTK_STACK(stack), timezone_screen, "timezone");
+
+    GtkWidget *keyboard_screen = create_keyboard_screen(on_next_screen, on_prev_screen);
+    gtk_stack_add_named(GTK_STACK(stack), keyboard_screen, "keyboard");
+
+    GtkWidget *disk_selection_screen = create_disk_selection_screen(on_next_screen, on_prev_screen);
+    gtk_stack_add_named(GTK_STACK(stack), disk_selection_screen, "disk_selection");
+
+    GtkWidget *network_config_screen = create_network_config_screen(on_next_screen, on_prev_screen);
+    gtk_stack_add_named(GTK_STACK(stack), network_config_screen, "network_config");
+
+    GtkWidget *user_config_screen = create_user_config_screen(on_next_screen, on_prev_screen);
+    gtk_stack_add_named(GTK_STACK(stack), user_config_screen, "user_config");
+
+    GtkWidget *install_screen = create_install_screen(app); // app is passed to allow closing
+    gtk_stack_add_named(GTK_STACK(stack), install_screen, "install");
+
+    // Navigation buttons (will be part of each screen's create function for better placement)
+    // This is a simplified navigation for now.
+    // Proper navigation will be integrated into each screen module.
+
+    gtk_widget_set_visible(window, TRUE);
 }
 
 int main(int argc, char **argv) {
-    GtkApplication *app;
-    int status;
-
-    app = gtk_application_new("com.wave.waveinstaller", G_APPLICATION_DEFAULT_FLAGS);
+    app = gtk_application_new("com.example.waveinstaller", G_APPLICATION_FLAGS_NONE);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-    status = g_application_run(G_APPLICATION(app), argc, argv);
+    int status = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);
-
     return status;
 }

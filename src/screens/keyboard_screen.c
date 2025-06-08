@@ -1,86 +1,58 @@
 #include "keyboard_screen.h"
-#include "disk_screen.h"     // To navigate to the next screen
-#include "timezone_screen.h" // To navigate back
-#include <gtk/gtk.h>
+#include "../utils/utils.h"
 
-// Forward declarations for navigation functions
-extern void switch_screen(GtkWidget *new_screen);
-extern void navigate_to_disk_screen(GtkButton *button, gpointer user_data);
-extern void navigate_to_timezone_screen(GtkButton *button, gpointer user_data);
+// Placeholder for actual keyboard layout data and logic
+const char *keyboard_layouts[] = {"English (US)", "English (UK)", "Spanish", "French (AZERTY)", "German (QWERTZ)", NULL};
 
-GtkWidget *create_keyboard_screen(void) {
-    GtkWidget *box;
-    GtkWidget *title_label;
-    GtkWidget *layout_combo_box; // Using GtkComboBoxText for keyboard layouts
-    GtkWidget *variant_combo_box; // Optional: for layout variants (e.g., Dvorak, Colemak for US layout)
-    GtkWidget *test_entry; // A text entry to test the keyboard layout
-    GtkWidget *buttons_box;
-    GtkWidget *back_button;
-    GtkWidget *next_button;
-
-    // Main box container
-    box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+GtkWidget* create_keyboard_screen(NextScreenCallback on_next, PrevScreenCallback on_prev) {
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_vexpand(box, TRUE);
+    gtk_widget_set_hexpand(box, TRUE);
     gtk_widget_set_halign(box, GTK_ALIGN_CENTER);
     gtk_widget_set_valign(box, GTK_ALIGN_CENTER);
-    gtk_widget_add_css_class(box, "keyboard-screen-box");
+    gtk_widget_add_css_class(box, "content-box");
 
-    title_label = gtk_label_new("Select Keyboard Layout");
-    gtk_widget_add_css_class(title_label, "title-label");
-    gtk_widget_set_margin_top(title_label, 20);
-    gtk_widget_set_margin_bottom(title_label, 20);
-    gtk_box_append(GTK_BOX(box), title_label);
-
-    // Keyboard layout selection
-    // In a real installer, this list would be populated from system data (e.g., XKB)
-    const char *layouts[] = {"US English", "UK English", "German", "French", "Spanish"};
-    layout_combo_box = gtk_combo_box_text_new();
-    for (int i = 0; i < G_N_ELEMENTS(layouts); i++) {
-        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(layout_combo_box), layouts[i]);
+    GtkWidget *icon = create_image_from_file("keyboard_icon.png", 64, 64);
+    if (icon) {
+        gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
+        gtk_box_append(GTK_BOX(box), icon);
+    } else {
+        gtk_box_append(GTK_BOX(box), gtk_label_new("(Keyboard Icon)"));
     }
-    gtk_combo_box_set_active(GTK_COMBO_BOX(layout_combo_box), 0); // Default to US English
-    gtk_widget_set_margin_start(layout_combo_box, 50);
-    gtk_widget_set_margin_end(layout_combo_box, 50);
-    gtk_widget_set_margin_bottom(layout_combo_box, 10);
-    gtk_widget_add_css_class(layout_combo_box, "keyboard-layout-combo");
-    gtk_box_append(GTK_BOX(box), layout_combo_box);
 
-    // Optional: Keyboard variant selection (can be hidden or shown based on selected layout)
-    // For simplicity, let's add a placeholder. A real implementation would be more dynamic.
-    variant_combo_box = gtk_combo_box_text_new();
-    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(variant_combo_box), "Default");
-    // Add other variants as needed, e.g., gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(variant_combo_box), "Dvorak");
-    gtk_combo_box_set_active(GTK_COMBO_BOX(variant_combo_box), 0);
-    gtk_widget_set_margin_start(variant_combo_box, 50);
-    gtk_widget_set_margin_end(variant_combo_box, 50);
-    gtk_widget_set_margin_bottom(variant_combo_box, 20);
-    gtk_widget_add_css_class(variant_combo_box, "keyboard-variant-combo");
-    gtk_box_append(GTK_BOX(box), variant_combo_box);
+    GtkWidget *title = gtk_label_new("Select Keyboard Layout");
+    gtk_widget_add_css_class(title, "welcome-subtitle");
+    gtk_widget_set_halign(title, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(box), title);
 
-    // Text entry to test keyboard layout
-    test_entry = gtk_entry_new();
-    gtk_entry_set_placeholder_text(GTK_ENTRY(test_entry), "Type here to test your keyboard layout...");
-    gtk_widget_set_margin_start(test_entry, 50);
-    gtk_widget_set_margin_end(test_entry, 50);
-    gtk_widget_set_margin_bottom(test_entry, 30);
-    gtk_widget_add_css_class(test_entry, "keyboard-test-entry");
+    // Using a GtkListView for a more scrollable/searchable list if layouts are many
+    // For simplicity with a few items, GtkDropDown is also fine.
+    // Here, we'll use a GtkDropDown as it's simpler for this example.
+    GtkWidget *layout_dropdown = gtk_drop_down_new_from_strings(keyboard_layouts);
+    gtk_widget_set_halign(layout_dropdown, GTK_ALIGN_CENTER);
+    // TODO: Add signal handler for layout selection
+    gtk_box_append(GTK_BOX(box), layout_dropdown);
+
+    // Test area
+    GtkWidget *test_label = gtk_label_new("Test your keyboard layout here:");
+    gtk_widget_set_halign(test_label, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_top(test_label, 20);
+    gtk_box_append(GTK_BOX(box), test_label);
+
+    GtkWidget *test_entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(test_entry), "Type here...");
+    gtk_widget_set_halign(test_entry, GTK_ALIGN_CENTER);
+    gtk_widget_set_size_request(test_entry, 300, -1); // Set a reasonable width
     gtk_box_append(GTK_BOX(box), test_entry);
 
-    // Box for Back and Next buttons
-    buttons_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_widget_set_halign(buttons_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_bottom(buttons_box, 20);
+    GtkWidget *spacer = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_vexpand(spacer, TRUE);
+    gtk_box_append(GTK_BOX(box), spacer);
 
-    back_button = gtk_button_new_with_label("Back");
-    gtk_widget_add_css_class(back_button, "back-button");
-    g_signal_connect(back_button, "clicked", G_CALLBACK(navigate_to_timezone_screen), NULL);
-    gtk_box_append(GTK_BOX(buttons_box), back_button);
-
-    next_button = gtk_button_new_with_label("Next");
-    gtk_widget_add_css_class(next_button, "next-button");
-    g_signal_connect(next_button, "clicked", G_CALLBACK(navigate_to_disk_screen), NULL);
-    gtk_box_append(GTK_BOX(buttons_box), next_button);
-
-    gtk_box_append(GTK_BOX(box), buttons_box);
+    GtkWidget *nav_box = create_navigation_box(on_next, on_prev, NULL, NULL, "Next");
+    gtk_box_append(GTK_BOX(box), nav_box);
+    gtk_widget_set_vexpand(nav_box, FALSE);
+    gtk_widget_set_valign(nav_box, GTK_ALIGN_END);
 
     return box;
 }
