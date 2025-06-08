@@ -110,7 +110,7 @@ GtkWidget *create_user_screen(void) {
     password_entry = gtk_entry_new();
     gtk_entry_set_visibility(GTK_ENTRY(password_entry), FALSE); // Mask password
     gtk_entry_set_input_purpose(GTK_ENTRY(password_entry), GTK_INPUT_PURPOSE_PASSWORD);
-    gtk_builder_add_named(builder, "password_entry", G_OBJECT(password_entry)); // Add to builder, use G_OBJECT
+    gtk_builder_expose_object(builder, "password_entry", G_OBJECT(password_entry)); // Corrected function
     gtk_grid_attach(GTK_GRID(grid), password_label, 0, 2, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), password_entry, 1, 2, 1, 1);
 
@@ -125,14 +125,14 @@ GtkWidget *create_user_screen(void) {
     confirm_password_entry = gtk_entry_new();
     gtk_entry_set_visibility(GTK_ENTRY(confirm_password_entry), FALSE);
     gtk_entry_set_input_purpose(GTK_ENTRY(confirm_password_entry), GTK_INPUT_PURPOSE_PASSWORD);
-    gtk_builder_add_named(builder, "confirm_password_entry", G_OBJECT(confirm_password_entry)); // Add to builder, use G_OBJECT
+    gtk_builder_expose_object(builder, "confirm_password_entry", G_OBJECT(confirm_password_entry)); // Corrected function
     gtk_grid_attach(GTK_GRID(grid), confirm_password_label, 0, 4, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), confirm_password_entry, 1, 4, 1, 1);
 
     password_match_label = gtk_label_new("");
     gtk_widget_set_halign(password_match_label, GTK_ALIGN_START);
     gtk_widget_add_css_class(password_match_label, "password-match");
-    gtk_builder_add_named(builder, "password_match_label", G_OBJECT(password_match_label)); // Add to builder, use G_OBJECT
+    gtk_builder_expose_object(builder, "password_match_label", G_OBJECT(password_match_label)); // Corrected function
     gtk_grid_attach(GTK_GRID(grid), password_match_label, 1, 5, 1, 1); // Below confirm password
     g_signal_connect(password_entry, "changed", G_CALLBACK(check_passwords_match), builder);
     g_signal_connect(confirm_password_entry, "changed", G_CALLBACK(check_passwords_match), builder);
