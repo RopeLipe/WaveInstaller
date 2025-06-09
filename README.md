@@ -1,105 +1,96 @@
-# Wave OS Installer
+# Wave Installer
 
-A modern GTK4-based installer for Wave OS with a clean, rounded UI design.
+A modern, GTK4-based installer for Linux distributions with a beautiful, user-friendly interface.
 
 ## Features
 
-- Modern GTK4 interface with custom styling
-- Step-by-step installation process
-- Language selection
-- Timezone configuration
-- Keyboard layout selection
-- Disk selection with visual cards
-- Network configuration (WiFi/Ethernet)
-- User account creation
-- Real-time installation progress
-
-## Design
-
-- **Blue accents** with light/dark theme support
-- **Rounded elements** throughout the interface
-- **No title bar** for a modern look
-- **Interactive elements** with hover effects
-- **Modern icons** using system icon themes
-- **Proper UI elements** for each screen (no dropdowns for disk selection)
-
-## Building
-
-### Prerequisites
-
-- GTK4 development libraries
-- GCC compiler
-- pkg-config
-
-On Ubuntu/Debian:
-```bash
-sudo apt install libgtk-4-dev build-essential pkg-config
-```
-
-On Fedora:
-```bash
-sudo dnf install gtk4-devel gcc pkg-config
-```
-
-### Compilation
-
-```bash
-make
-```
-
-### Running
-
-```bash
-make run
-```
-
-For development with GTK Inspector:
-```bash
-make dev
-```
-
-## Project Structure
-
-```
-├── main.c              # Application entry point
-├── installer.c/.h      # Main window and navigation
-├── style.css          # Custom GTK4 CSS styling
-├── screens/           # Individual installer screens
-│   ├── welcome.c/.h   # Welcome screen
-│   ├── language.c/.h  # Language selection
-│   ├── timezone.c/.h  # Timezone selection
-│   ├── keyboard.c/.h  # Keyboard layout
-│   ├── disk.c/.h      # Disk selection with cards
-│   ├── network.c/.h   # Network configuration
-│   ├── user.c/.h      # User account creation
-│   └── install.c/.h   # Installation progress
-├── assets/            # Icons and images
-└── Makefile          # Build configuration
-```
+- **Modern UI**: Clean, rounded interface with blue accents and theme-aware styling
+- **No Titlebar**: Frameless window design for a modern appearance
+- **Multi-screen Workflow**: Guided installation process through 8 intuitive screens
+- **Theme Support**: Automatically adapts to system light/dark theme
+- **Custom CSS**: Prevents Adwaita theme conflicts with complete custom styling
+- **Interactive Elements**: Proper UI components for each screen type (disk selection uses cards, not dropdowns)
+- **Responsive Design**: Works well on different screen sizes
 
 ## Screens
 
 1. **Welcome** - Introduction with feature highlights
-2. **Language** - Language selection with flags
-3. **Timezone** - Timezone selection with city list
-4. **Keyboard** - Keyboard layout with preview
-5. **Disk** - Visual disk selection cards (no dropdowns)
-6. **Network** - WiFi and ethernet configuration
-7. **User** - Account creation with avatar
-8. **Install** - Progress with real-time updates
+2. **Language** - Language selection with native names and flags
+3. **Timezone** - Searchable timezone selection with regions
+4. **Keyboard** - Keyboard layout and variant selection with testing
+5. **Disk** - Visual disk selection with usage indicators and partition schemes
+6. **Network** - Wi-Fi and Ethernet configuration with connection testing
+7. **User** - User account creation with password strength checking
+8. **Install** - Real-time installation progress with detailed logging
 
-## Styling
+## Requirements
 
-The installer uses custom CSS to override Adwaita defaults and provide:
-- Consistent theming across light/dark modes
-- Blue accent colors
-- Rounded corners and modern spacing
-- Smooth transitions and hover effects
-- Proper contrast and accessibility
+### System Dependencies (install via package manager)
+```bash
+# Ubuntu/Debian
+sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 python3-gi-cairo
 
-## Notes
+# Fedora
+sudo dnf install python3-gobject gtk4-devel libadwaita-devel
 
-- This is a frontend UI demonstration
-- Backend installation logic is not implemented
-- Disk detection and actual partitioning would need system integration
-- Network configuration would require NetworkManager integration
+# Arch Linux
+sudo pacman -S python-gobject gtk4 libadwaita
+```
+
+## File Structure
+
+```
+WaveInstaller/
+├── main.py                 # Main application entry point
+├── requirements.txt        # Python dependencies documentation
+├── assets/
+│   ├── style.css          # Main CSS styling (prevents Adwaita conflicts)
+│   ├── additional.css     # Additional CSS for special elements
+│   └── icons/             # Application icons (create as needed)
+└── screens/               # Individual screen implementations
+    ├── welcome.py         # Welcome screen with features
+    ├── language.py        # Language selection
+    ├── timezone.py        # Timezone configuration
+    ├── keyboard.py        # Keyboard layout selection
+    ├── disk.py           # Disk partitioning
+    ├── network.py        # Network configuration
+    ├── user.py           # User account setup
+    └── install.py        # Installation progress
+```
+
+## Running the Installer
+
+```bash
+# Make executable
+chmod +x main.py
+
+# Run the installer
+python3 main.py
+```
+
+## Design Principles
+
+- **User-Centric**: Each screen uses the most appropriate UI elements for its purpose
+- **Visual Feedback**: Clear progress indicators, hover effects, and state changes
+- **Accessibility**: Proper focus management, keyboard navigation, and reduced motion support
+- **Theme Integration**: Respects system theme while maintaining consistent branding
+- **Error Prevention**: Input validation and helpful guidance throughout the process
+
+## Customization
+
+The installer is designed to be easily customizable:
+
+- **Colors**: Modify CSS variables in `assets/style.css`
+- **Branding**: Replace logos and update text in screen files
+- **Steps**: Add or modify installation steps in `screens/install.py`
+- **Validation**: Adjust form validation in individual screen files
+
+## Technical Notes
+
+- Built with **GTK4** and **Libadwaita** for modern Linux integration
+- Uses **CSS Grid** and **Flexbox** for responsive layouts
+- **Threaded installation** process to maintain UI responsiveness
+- **Custom CSS** completely overrides Adwaita defaults to prevent conflicts
+- **Rounded elements** and **modern typography** throughout
+
+This installer provides a professional, modern experience that users expect from contemporary operating systems while maintaining the flexibility and power of a Linux environment.
