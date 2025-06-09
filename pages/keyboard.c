@@ -1,6 +1,9 @@
 #include "../installer.h"
 
-static GtkWidget* keyboard_combo = NULL;
+    // Content area
+    GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_halign(content_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_hexpand(content_box, TRUE);ic GtkWidget* keyboard_combo = NULL;
 static GtkWidget* test_entry = NULL;
 
 static void on_keyboard_layout_changed(GtkComboBox* combo, gpointer user_data) {

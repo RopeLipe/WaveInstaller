@@ -222,11 +222,10 @@ GtkWidget* create_network_page(void) {
     gtk_widget_add_css_class(network_title, "section-title");
     gtk_widget_set_halign(network_title, GTK_ALIGN_START);
     gtk_box_append(GTK_BOX(network_container), network_title);
-    
-    // Scrollable network list
+      // Scrollable network list
     GtkWidget* scrolled = gtk_scrolled_window_new();
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled, -1, 200);
+    gtk_widget_set_vexpand(scrolled, TRUE);
     
     network_list_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     

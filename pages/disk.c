@@ -85,11 +85,10 @@ GtkWidget* create_disk_page(void) {
     gtk_box_append(GTK_BOX(header_box), subtitle);
     
     gtk_box_append(GTK_BOX(page), header_box);
-    
-    // Content area
+      // Content area
     GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
     gtk_widget_set_halign(content_box, GTK_ALIGN_FILL);
-    gtk_widget_set_size_request(content_box, -1, 300);
+    gtk_widget_set_vexpand(content_box, TRUE);
     
     // Scrollable disk list
     GtkWidget* scrolled = gtk_scrolled_window_new();

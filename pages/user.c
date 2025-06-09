@@ -98,11 +98,10 @@ GtkWidget* create_user_page(void) {
     gtk_box_append(GTK_BOX(header_box), subtitle);
     
     gtk_box_append(GTK_BOX(page), header_box);
-    
-    // Content area
+      // Content area
     GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
     gtk_widget_set_halign(content_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_size_request(content_box, 500, -1);
+    gtk_widget_set_hexpand(content_box, TRUE);
     
     // User form in a grid
     GtkWidget* form_grid = gtk_grid_new();

@@ -8,12 +8,13 @@ GtkWidget* navigation_box = NULL;
 void create_installer_window(GtkApplication *app) {
     // Apply custom CSS first
     apply_custom_css();
-    
-    // Create main window
+      // Create main window
     main_window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(main_window), "Wave Installer");
-    gtk_window_set_resizable(GTK_WINDOW(main_window), FALSE);
     gtk_window_set_decorated(GTK_WINDOW(main_window), FALSE);
+    
+    // Set a default size but allow the window manager to resize/position
+    gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
     
     // Create main container
     GtkWidget* main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
