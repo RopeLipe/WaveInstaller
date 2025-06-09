@@ -114,10 +114,9 @@ disk_screen_create(WaveInstallerApplication *app) {
         gtk_toggle_button_set_group(GTK_TOGGLE_BUTTON(disk_card), 
                                    disk_group ? GTK_TOGGLE_BUTTON(disk_group->data) : NULL);
         if (!disk_group) disk_group = g_slist_append(disk_group, disk_card);
-        
-        /* Disk content */
+          /* Disk content */
         GtkWidget *disk_content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 16);
-        gtk_toggle_button_set_child(GTK_TOGGLE_BUTTON(disk_card), disk_content);
+        gtk_button_set_child(GTK_BUTTON(disk_card), disk_content);
         
         /* Disk icon */
         GtkWidget *disk_icon = gtk_image_new_from_icon_name("drive-harddisk");

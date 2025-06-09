@@ -164,10 +164,9 @@ network_screen_create(WaveInstallerApplication *app) {
         gtk_toggle_button_set_group(GTK_TOGGLE_BUTTON(network_item), 
                                    network_group ? GTK_TOGGLE_BUTTON(network_group->data) : NULL);
         if (!network_group) network_group = g_slist_append(network_group, network_item);
-        
-        /* Network content */
+          /* Network content */
         GtkWidget *network_content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
-        gtk_toggle_button_set_child(GTK_TOGGLE_BUTTON(network_item), network_content);
+        gtk_button_set_child(GTK_BUTTON(network_item), network_content);
         
         /* Network info */
         GtkWidget *network_info = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);

@@ -118,7 +118,7 @@ language_screen_create(WaveInstallerApplication *app) {
         
         /* Language content */
         lang_content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 16);
-        gtk_toggle_button_set_child(GTK_TOGGLE_BUTTON(lang_item), lang_content);
+        gtk_button_set_child(GTK_BUTTON(lang_item), lang_content);
         
         /* Flag */
         flag_label = gtk_label_new(languages[i].flag);

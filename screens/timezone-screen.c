@@ -100,7 +100,7 @@ populate_timezone_list(const char *filter) {
         
         /* Timezone content */
         GtkWidget *tz_content = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
-        gtk_toggle_button_set_child(GTK_TOGGLE_BUTTON(tz_item), tz_content);
+        gtk_button_set_child(GTK_BUTTON(tz_item), tz_content);
         
         /* Main name */
         GtkWidget *name_label = gtk_label_new(timezones[i].description);

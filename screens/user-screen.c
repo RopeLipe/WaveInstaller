@@ -159,10 +159,9 @@ user_screen_create(WaveInstallerApplication *app) {
     gtk_widget_add_css_class(hostname_label, "form-label");
     gtk_widget_set_halign(hostname_label, GTK_ALIGN_END);
     gtk_grid_attach(GTK_GRID(form_grid), hostname_label, 0, row, 1, 1);
-    
-    hostname_entry = gtk_entry_new();
+      hostname_entry = gtk_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(hostname_entry), "Enter computer name");
-    gtk_entry_set_text(GTK_ENTRY(hostname_entry), "wave-linux");
+    gtk_editable_set_text(GTK_EDITABLE(hostname_entry), "wave-linux");
     gtk_widget_add_css_class(hostname_entry, "form-input");
     gtk_widget_set_hexpand(hostname_entry, TRUE);
     g_signal_connect(hostname_entry, "changed", G_CALLBACK(on_entry_changed), "hostname");
