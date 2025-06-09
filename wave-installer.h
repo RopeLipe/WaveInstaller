@@ -23,9 +23,9 @@ typedef enum {
 } ScreenType;
 
 typedef struct {
-    GtkWidget *widget;
     const char *name;
     void (*create_fn)(WaveInstallerApplication *app);
+    GtkWidget *widget;
 } Screen;
 
 struct _WaveInstallerApplication {

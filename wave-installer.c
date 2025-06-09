@@ -31,16 +31,15 @@ static void
 wave_installer_application_init(WaveInstallerApplication *self) {
     self->current_screen_index = 0;
     self->current_screen = NULL;
-    
-    /* Initialize screen definitions */
-    self->screens[SCREEN_WELCOME] = (Screen){"Welcome", welcome_screen_create};
-    self->screens[SCREEN_LANGUAGE] = (Screen){"Language", language_screen_create};
-    self->screens[SCREEN_TIMEZONE] = (Screen){"Timezone", timezone_screen_create};
-    self->screens[SCREEN_KEYBOARD] = (Screen){"Keyboard", keyboard_screen_create};
-    self->screens[SCREEN_DISK] = (Screen){"Disk", disk_screen_create};
-    self->screens[SCREEN_NETWORK] = (Screen){"Network", network_screen_create};
-    self->screens[SCREEN_USER] = (Screen){"User", user_screen_create};
-    self->screens[SCREEN_INSTALL] = (Screen){"Install", install_screen_create};
+      /* Initialize screen definitions */
+    self->screens[SCREEN_WELCOME] = (Screen){"Welcome", welcome_screen_create, NULL};
+    self->screens[SCREEN_LANGUAGE] = (Screen){"Language", language_screen_create, NULL};
+    self->screens[SCREEN_TIMEZONE] = (Screen){"Timezone", timezone_screen_create, NULL};
+    self->screens[SCREEN_KEYBOARD] = (Screen){"Keyboard", keyboard_screen_create, NULL};
+    self->screens[SCREEN_DISK] = (Screen){"Disk", disk_screen_create, NULL};
+    self->screens[SCREEN_NETWORK] = (Screen){"Network", network_screen_create, NULL};
+    self->screens[SCREEN_USER] = (Screen){"User", user_screen_create, NULL};
+    self->screens[SCREEN_INSTALL] = (Screen){"Install", install_screen_create, NULL};
 }
 
 static void
