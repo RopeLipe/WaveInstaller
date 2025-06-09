@@ -36,16 +36,10 @@ class TimezoneScreen:
         subtitle.set_text("Choose your timezone to set the correct system time")
         subtitle.add_css_class("screen-subtitle")
         content.append(subtitle)
-        
-        # Search box
+          # Search box
         search_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         search_box.set_spacing(12)
         search_box.set_margin_bottom(20)
-        
-        search_icon = Gtk.Image()
-        search_icon.set_from_icon_name("system-search")
-        search_icon.set_pixel_size(20)
-        search_box.append(search_icon)
         
         self.search_entry = Gtk.Entry()
         self.search_entry.set_placeholder_text("Search for your city or timezone...")
@@ -71,8 +65,7 @@ class TimezoneScreen:
         
         scrolled.set_child(self.timezone_box)
         content.append(scrolled)
-        
-        # Navigation buttons
+          # Navigation buttons
         nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         nav_box.add_css_class("nav-buttons")
         nav_box.set_halign(Gtk.Align.FILL)
@@ -83,11 +76,6 @@ class TimezoneScreen:
         back_btn.add_css_class("secondary-button")
         back_btn.connect("clicked", lambda x: self.app.previous_screen())
         nav_box.append(back_btn)
-        
-        # Spacer
-        spacer = Gtk.Box()
-        spacer.set_hexpand(True)
-        nav_box.append(spacer)
         
         # Next button
         next_btn = Gtk.Button(label="Continue")

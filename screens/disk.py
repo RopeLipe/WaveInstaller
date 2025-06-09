@@ -105,17 +105,11 @@ class DiskScreen:
         nav_box.add_css_class("nav-buttons")
         nav_box.set_halign(Gtk.Align.FILL)
         nav_box.set_homogeneous(False)
-        
-        # Back button
+          # Back button
         back_btn = Gtk.Button(label="Back")
         back_btn.add_css_class("secondary-button")
         back_btn.connect("clicked", lambda x: self.app.previous_screen())
         nav_box.append(back_btn)
-        
-        # Spacer
-        spacer = Gtk.Box()
-        spacer.set_hexpand(True)
-        nav_box.append(spacer)
         
         # Next button
         next_btn = Gtk.Button(label="Continue")

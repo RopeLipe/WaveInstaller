@@ -91,15 +91,14 @@ window {
     padding: 12px 24px;
     font-size: 16px;
     font-weight: 500;
-    min-height: 48px;
+    min-height: 44px;
     transition: var(--transition);
-    box-shadow: var(--shadow);
+    box-shadow: none;
 }
 
 .primary-button:hover {
     background: var(--primary-blue-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
+    box-shadow: 0 0 15px rgba(0, 102, 204, 0.4);
 }
 
 .primary-button:active {
@@ -114,20 +113,20 @@ window {
     padding: 12px 24px;
     font-size: 16px;
     font-weight: 500;
-    min-height: 48px;
+    min-height: 44px;
     transition: var(--transition);
 }
 
 .secondary-button:hover {
     background: var(--dark-grey);
     color: var(--text-light);
-    transform: translateY(-1px);
 }
 
 /* Navigation buttons */
 .nav-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 12px;
     margin-top: auto;
     padding-top: 40px;
 }
