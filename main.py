@@ -28,15 +28,14 @@ class WaveInstaller(Adw.Application):
         self.current_screen_index = 0
         self.screens = []
         self.main_window = None
-      def do_activate(self):
-        # Create main window first
+        
+    def do_activate(self):
+        # Load custom CSS
+        self.load_css()        # Create main window
         self.main_window = Gtk.ApplicationWindow(application=self)
         self.main_window.set_title("")
         self.main_window.set_default_size(900, 600)
         self.main_window.set_resizable(False)
-        
-        # Load custom CSS after window creation
-        self.load_css()
         
         # Remove titlebar
         self.main_window.set_titlebar(Gtk.HeaderBar())
@@ -50,7 +49,8 @@ class WaveInstaller(Adw.Application):
         
         # Initialize screens
         self.init_screens()
-          # Show first screen
+        
+        # Show first screen
         self.show_screen(0)
         
         self.main_window.present()
@@ -59,15 +59,8 @@ class WaveInstaller(Adw.Application):
         """Load custom CSS styling"""
         css_provider = Gtk.CssProvider()
         css_path = os.path.join(os.path.dirname(__file__), 'assets', 'style.css')
-        
-        try:
-            css_provider.load_from_path(css_path)
-            print(f"✓ CSS loaded from: {css_path}")
-        except Exception as e:
-            print(f"✗ Failed to load CSS from {css_path}: {e}")
-            return
-        
-        Gtk.StyleContext.add_provider_for_display(
+        css_provider.load_from_path(css_path)
+          Gtk.StyleContext.add_provider_for_display(
             self.main_window.get_display() if self.main_window else Gdk.Display.get_default(),
             css_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
@@ -114,14 +107,8 @@ class WaveInstaller(Adw.Application):
         self.quit()
 
 def main():
-    try:
-        app = WaveInstaller()
-        return app.run(sys.argv)
-    except Exception as e:
-        print(f"Error starting Wave Installer: {e}")
-        import traceback
-        traceback.print_exc()
-        return 1
+    app = WaveInstaller()
+    return app.run(sys.argv)
 
 if __name__ == '__main__':
-    sys.exit(main())
+    main()
