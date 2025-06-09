@@ -39,12 +39,12 @@ GtkWidget* create_language_page(void) {
     gtk_widget_add_css_class(search_entry, "search-entry");
     g_signal_connect(search_entry, "search-changed", G_CALLBACK(on_search_changed), NULL);
     gtk_box_append(GTK_BOX(content_box), search_entry);
-    
-    // Scrollable language list
+      // Scrollable language list
     GtkWidget* scrolled = gtk_scrolled_window_new();
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_vexpand(scrolled, TRUE);
     gtk_widget_set_hexpand(scrolled, TRUE);
+    gtk_widget_set_size_request(scrolled, -1, 300); // Set minimum height
     gtk_widget_add_css_class(scrolled, "language-list");
     
     GtkWidget* language_list_box = gtk_list_box_new();
@@ -75,17 +75,33 @@ GtkWidget* create_language_page(void) {
         "Ελληνικά (Ελλάδα)"
     };
     
-    for (int i = 0; i < 20; i++) {
-        GtkWidget* row = gtk_list_box_row_new();
+    for (int i = 0; i < 20; i++) {        GtkWidget* row = gtk_list_box_row_new();
         gtk_widget_add_css_class(row, "language-row");
+        
+        // Create a more visually distinct row with icon
+        GtkWidget* row_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+        gtk_widget_set_margin_top(row_box, 10);
+        gtk_widget_set_margin_bottom(row_box, 10);
+        gtk_widget_set_margin_start(row_box, 12);
+        gtk_widget_set_margin_end(row_box, 12);
+        
+        // Add globe icon for languages
+        GtkWidget* icon = gtk_image_new_from_icon_name("preferences-desktop-locale-symbolic");
+        gtk_widget_set_margin_start(icon, 4);
+        gtk_box_append(GTK_BOX(row_box), icon);
         
         GtkWidget* label = gtk_label_new(languages[i]);
         gtk_widget_set_halign(label, GTK_ALIGN_START);
-        gtk_widget_set_margin_top(label, 12);
-        gtk_widget_set_margin_bottom(label, 12);
-        gtk_widget_set_margin_start(label, 16);
-        gtk_widget_set_margin_end(label, 16);
-        gtk_list_box_row_set_child(GTK_LIST_BOX_ROW(row), label);
+        gtk_widget_set_hexpand(label, TRUE);
+        gtk_box_append(GTK_BOX(row_box), label);
+
+        // Add selection indicator
+        GtkWidget* check = gtk_image_new_from_icon_name("emblem-ok-symbolic");
+        gtk_widget_set_opacity(check, 0);
+        gtk_widget_add_css_class(check, "selection-check");
+        gtk_box_append(GTK_BOX(row_box), check);
+        
+        gtk_list_box_row_set_child(GTK_LIST_BOX_ROW(row), row_box);
         
         gtk_list_box_append(GTK_LIST_BOX(language_list_box), row);
     }

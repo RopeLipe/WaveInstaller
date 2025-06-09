@@ -18,17 +18,18 @@ void create_installer_window(GtkApplication *app) {
       // Create main container
     GtkWidget* main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_window_set_child(GTK_WINDOW(main_window), main_box);
-    
-    // Create content area with padding
+      // Create content area with minimal padding
     GtkWidget* content_frame = gtk_frame_new(NULL);
     gtk_widget_add_css_class(content_frame, "main-frame");
     gtk_widget_set_hexpand(content_frame, TRUE);
     gtk_widget_set_vexpand(content_frame, TRUE);
-    gtk_box_append(GTK_BOX(main_box), content_frame);    GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 16);
-    gtk_widget_set_margin_top(content_box, 24);
-    gtk_widget_set_margin_bottom(content_box, 16);
-    gtk_widget_set_margin_start(content_box, 32);
-    gtk_widget_set_margin_end(content_box, 32);
+    gtk_box_append(GTK_BOX(main_box), content_frame);
+    
+    GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_margin_top(content_box, 0);
+    gtk_widget_set_margin_bottom(content_box, 0);
+    gtk_widget_set_margin_start(content_box, 40);
+    gtk_widget_set_margin_end(content_box, 40);
     gtk_frame_set_child(GTK_FRAME(content_frame), content_box);
     
     // Create stack for pages

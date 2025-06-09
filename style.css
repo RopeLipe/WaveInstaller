@@ -9,8 +9,8 @@ window {
     background: @theme_bg_color;
     border-radius: 12px;
     border: 1px solid @borders;
-    min-height: 400px;
-    min-width: 600px;
+    min-height: 450px;
+    min-width: 650px;
 }
 
 /* Page titles and subtitles */
@@ -150,6 +150,38 @@ window {
     border: 1px solid @borders;
     padding: 8px 12px;
     background: @theme_base_color;
+}
+
+/* Language list styling */
+.language-list,
+.disk-list,
+.network-list {
+    background: @theme_base_color;
+    border-radius: 6px;
+    border: 1px solid @borders;
+}
+
+.language-listbox {
+    background: transparent;
+}
+
+.language-row {
+    padding: 2px;
+    border-radius: 4px;
+    margin: 2px 6px;
+}
+
+.language-row:hover {
+    background: alpha(@theme_selected_bg_color, 0.3);
+}
+
+.language-row:selected {
+    background: alpha(#0066cc, 0.2);
+}
+
+/* Expand vertical space for all lists */
+scrolledwindow {
+    min-height: 250px;
 }
 
 /* Disk cards */
