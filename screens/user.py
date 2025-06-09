@@ -176,11 +176,10 @@ class UserScreen:
         self.next_btn = Gtk.Button(label="Continue")
         self.next_btn.add_css_class("primary-button")
         self.next_btn.connect("clicked", lambda x: self.validate_and_continue())
-        self.next_btn.set_sensitive(False)  # Disabled until form is valid
-        nav_box.append(self.next_btn)
+        self.next_btn.set_sensitive(False)  # Disabled until form is valid        nav_box.append(self.next_btn)
         
-        content.append(nav_box)
         container.append(content)
+        container.append(nav_box)
         
         return container
     

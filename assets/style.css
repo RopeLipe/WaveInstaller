@@ -55,9 +55,11 @@ window {
 .screen-container {
     padding: 40px;
     background: var(--light-grey);
-    height: 100%;
+    height: 560px;
+    width: 900px;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
 }
 
 .screen-content {
@@ -135,9 +137,10 @@ window {
     justify-content: flex-end;
     align-items: center;
     gap: 16px;
-    padding: 20px 0px;
+    padding: 20px 40px;
     margin-top: auto;
     width: 100%;
+    box-sizing: border-box;
 }
 
 /* Cards */

@@ -61,11 +61,13 @@ class TimezoneScreen:
         
         # Load and display timezones
         self.load_timezones()
-        self.populate_timezone_list()
-        
+        self.populate_timezone_list()        
         scrolled.set_child(self.timezone_box)
         content.append(scrolled)
-          # Navigation buttons
+        
+        container.append(content)
+        
+        # Navigation buttons
         nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         nav_box.add_css_class("nav-buttons")
         nav_box.set_halign(Gtk.Align.FILL)
@@ -83,8 +85,7 @@ class TimezoneScreen:
         next_btn.connect("clicked", lambda x: self.app.next_screen())
         nav_box.append(next_btn)
         
-        content.append(nav_box)
-        container.append(content)
+        container.append(nav_box)
         
         return container
     

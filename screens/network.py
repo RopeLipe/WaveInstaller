@@ -147,11 +147,10 @@ class NetworkScreen:
         # Next button
         next_btn = Gtk.Button(label="Continue")
         next_btn.add_css_class("primary-button")
-        next_btn.connect("clicked", lambda x: self.app.next_screen())
-        nav_box.append(next_btn)
+        next_btn.connect("clicked", lambda x: self.app.next_screen())        nav_box.append(next_btn)
         
-        content.append(nav_box)
         container.append(content)
+        container.append(nav_box)
         
         return container
     

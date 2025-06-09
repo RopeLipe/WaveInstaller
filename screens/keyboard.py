@@ -106,11 +106,13 @@ class KeyboardScreen:    def __init__(self, app):
         test_info.set_text("Try typing special characters and symbols")
         test_info.add_css_class("option-description")
         test_info.set_halign(Gtk.Align.START)
-        right_column.append(test_info)
-        
+        right_column.append(test_info)        
         columns.append(right_column)
         content.append(columns)
-          # Navigation buttons
+        
+        container.append(content)
+        
+        # Navigation buttons
         nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         nav_box.add_css_class("nav-buttons")
         nav_box.set_halign(Gtk.Align.FILL)
@@ -128,8 +130,7 @@ class KeyboardScreen:    def __init__(self, app):
         next_btn.connect("clicked", lambda x: self.app.next_screen())
         nav_box.append(next_btn)
         
-        content.append(nav_box)
-        container.append(content)
+        container.append(nav_box)
         
         return container
     
@@ -207,9 +208,12 @@ class KeyboardScreen:    def __init__(self, app):
         self.load_layout_variants(layout_code)
         
         print(f"Selected keyboard layout: {layout_code}")
-    
-    def load_layout_variants(self, layout_code):
+      def load_layout_variants(self, layout_code):
         """Load variants for the selected layout"""
+        # Safety check - ensure variant_box exists
+        if not self.variant_box:
+            return
+            
         # Clear existing variants
         child = self.variant_box.get_first_child()
         while child:
