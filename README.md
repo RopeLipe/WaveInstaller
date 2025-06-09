@@ -1,169 +1,129 @@
-# WaveInstaller - C GTK Implementation
+# Wave Installer
 
-A modern Linux installer UI built with C and GTK4/Libadwaita, featuring blue accents, light/dark theme support, rounded elements, and a clean, modern interface.
+A modern GTK4-based Linux installer with a clean, fixed-size interface supporting both light and dark themes.
 
 ## Features
 
-- **Modern UI Design**: Clean, modern interface with blue accent colors
-- **Theme Support**: Automatic light/dark theme detection and support
-- **Rounded Elements**: Consistent rounded corners throughout the interface
-- **No Titlebar**: Clean, borderless window design
-- **Multi-Screen Flow**: Welcome → Language → Timezone → Keyboard → Disk → Network → User → Install
-- **GTK4/Libadwaita**: Built with the latest GTK technologies
-- **Custom CSS**: Fully customizable styling with CSS
+- **Modern UI**: Clean, rounded corners, blue accent color
+- **Fixed Size Window**: 900x600 pixels, no titlebar/decorations
+- **Theme Support**: Both light and dark theme compatibility
+- **Complete Installation Flow**: 7 pages covering all installation steps
+- **Interactive Elements**: Searchable dropdowns, selectable cards, password strength indicator
 
-## Prerequisites
+## Installation Pages
 
-### Ubuntu/Debian
-```bash
-sudo apt update
-sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev
-```
-
-### Fedora/RHEL
-```bash
-sudo dnf install gcc pkg-config gtk4-devel libadwaita-devel
-```
-
-### Arch Linux
-```bash
-sudo pacman -S base-devel pkg-config gtk4 libadwaita
-```
-
-## Building
-
-1. Clone or download the project
-2. Navigate to the C GTK example directory:
-   ```bash
-   cd c-gtk-example
-   ```
-
-3. Build the application:
-   ```bash
-   make
-   ```
-
-4. Run the application:
-   ```bash
-   make run
-   ```
-
-## Installation
-
-To install system-wide:
-```bash
-sudo make install
-```
-
-This will install:
-- Binary to `/usr/local/bin/wave-installer`
-- CSS resources to `/usr/local/share/wave-installer/`
-- Desktop entry to `/usr/local/share/applications/`
-
-## Development
-
-### Debug Build
-```bash
-make debug
-```
-
-### Clean Build Files
-```bash
-make clean
-```
-
-### Package for Distribution
-```bash
-make package
-```
+1. **Welcome** - Introduction with feature list
+2. **Language Selection** - Searchable language dropdown
+3. **Timezone Selection** - Searchable timezone dropdown with current time display
+4. **Keyboard Layout** - Layout selection with preview and test area
+5. **Disk Selection** - Selectable disk cards with size/type information
+6. **Network Configuration** - Wi-Fi toggle, network cards, password dialog
+7. **User Account Creation** - User form with password strength indicator
 
 ## Project Structure
 
 ```
-c-gtk-example/
-├── main.c                 # Application entry point
-├── wave-installer.c       # Main application implementation
-├── wave-installer.h       # Main application header
-├── screens/               # Screen implementations
-│   ├── welcome-screen.c   # Welcome screen
-│   ├── language-screen.c  # Language selection
-│   ├── timezone-screen.c  # Timezone selection
-│   ├── keyboard-screen.c  # Keyboard layout
-│   ├── disk-screen.c      # Disk partitioning
-│   ├── network-screen.c   # Network configuration
-│   ├── user-screen.c      # User account creation
-│   ├── install-screen.c   # Installation progress
-│   └── *.h               # Header files for each screen
-├── resources/
-│   └── style.css         # Custom CSS styling
-├── Makefile              # Build configuration
-└── README.md             # This file
+WaveInstaller/
+├── main.c              # Application entry point
+├── installer.h         # Main header with function declarations
+├── installer.c         # Main window and navigation logic
+├── css.c              # CSS loading functionality
+├── style.css          # External stylesheet
+├── pages/             # Individual page implementations
+│   ├── welcome.c
+│   ├── language.c
+│   ├── timezone.c
+│   ├── keyboard.c
+│   ├── disk.c
+│   ├── network.c
+│   └── user.c
+└── Makefile           # Build configuration
 ```
 
-## Architecture
+## Dependencies
 
-The application follows a modular architecture:
+- GTK4 development libraries
+- GLib development libraries
+- GCC compiler
 
-1. **Main Application** (`wave-installer.c`): Manages the application lifecycle, window creation, and screen navigation
-2. **Screen Modules**: Each installer step is implemented as a separate module in the `screens/` directory
-3. **CSS Styling**: All visual styling is handled through CSS for easy customization
-4. **Navigation**: Consistent navigation pattern with Back/Next buttons
+### Ubuntu/Debian:
+```bash
+sudo apt install libgtk-4-dev libglib2.0-dev gcc make
+```
 
-## Key Components
+### Fedora:
+```bash
+sudo dnf install gtk4-devel glib2-devel gcc make
+```
 
-### Screen Management
-Each screen is implemented as a separate C file with a creation function that returns a GTK widget tree. The main application manages screen transitions and maintains state.
+### Arch Linux:
+```bash
+sudo pacman -S gtk4 glib2 gcc make
+```
 
-### CSS Integration
-The application loads a custom CSS file at startup, providing:
-- Blue accent color scheme
-- Rounded corners and modern styling
-- Dark/light theme support
-- Consistent spacing and typography
+## Building
 
-### Navigation Flow
-1. **Welcome**: Introduction and getting started
-2. **Language**: System language selection
-3. **Timezone**: Timezone and region selection
-4. **Keyboard**: Keyboard layout and variant selection
-5. **Disk**: Disk selection and partitioning options
-6. **Network**: WiFi/Ethernet network configuration
-7. **User**: User account and hostname setup
-8. **Install**: Installation progress and completion
+1. **Clone/Download** the project
+2. **Navigate** to the project directory
+3. **Build** using make:
+
+```bash
+make
+```
+
+### Build Options
+
+- `make` - Standard build
+- `make debug` - Build with debug symbols
+- `make clean` - Clean build files
+- `make run` - Build and run
+- `make install` - Install to /usr/local/bin
+
+## CSS Styling
+
+The application loads its styles from `style.css`. The CSS file path is currently hardcoded to:
+```
+/home/l/WaveInstaller/style.css
+```
+
+To change the CSS path, edit the `css_file_path` variable in `css.c`:
+
+```c
+const char* css_file_path = "/path/to/your/style.css";
+```
+
+If the CSS file is not found, the application will fall back to minimal inline styles and continue running.
 
 ## Customization
 
-### Styling
-Edit `resources/style.css` to customize:
-- Colors and themes
-- Button styles
-- Layout spacing
-- Typography
+### Changing Colors
+Edit `style.css` and modify the color values. The primary accent color is `#0066cc` (blue).
 
-### Adding Screens
-1. Create new `.c` and `.h` files in `screens/`
-2. Add screen enum to `wave-installer.h`
-3. Add screen creation function to main application
-4. Update Makefile to include new source files
+### Adding New Pages
+1. Create a new `.c` file in the `pages/` directory
+2. Add the function declaration to `installer.h`
+3. Add the page to the stack in `installer.c`
+4. Update the navigation logic
+5. Add the new file to the Makefile
 
-### Modifying UI
-Each screen's UI is built programmatically in its respective `.c` file. GTK4 widgets and CSS classes provide the visual structure.
+### Window Size
+Modify the window size in `installer.c`:
+```c
+gtk_window_set_default_size(GTK_WINDOW(main_window), WIDTH, HEIGHT);
+```
 
-## Differences from Python Version
+## Notes
 
-- **Performance**: C implementation offers better performance and smaller memory footprint
-- **Dependencies**: Only requires GTK4/Libadwaita, no Python runtime needed
-- **Distribution**: Compiles to native binary for easier distribution
-- **Integration**: Better system integration with native GTK applications
+- This is a **frontend-only** implementation with no actual installation logic
+- All backend functionality is simulated with placeholder data
+- The window is fixed-size and unresizable by design
+- Navigation between pages uses smooth slide transitions
+- All UI elements support both light and dark GTK themes
 
-## Contributing
+## Development
 
-1. Fork the project
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is open source. Please check the main project for license details.
+The code follows GTK4 best practices:
+- Uses native GTK4 widgets wherever possible
+- Implements proper memory management with GObject reference counting
+- Supports theme-aware styling through CSS
+- Uses appropriate GTK containers for responsive layouts

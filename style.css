@@ -1,0 +1,423 @@
+/* Wave Installer GTK4 Stylesheet */
+
+/* Main window and frame */
+.main-frame {
+    background: @theme_bg_color;
+    border-radius: 12px;
+    border: 1px solid @borders;
+}
+
+/* Page titles and subtitles */
+.welcome-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: @theme_fg_color;
+    margin: 16px 0;
+}
+
+.welcome-subtitle {
+    font-size: 14px;
+    color: @theme_unfocused_fg_color;
+    margin-bottom: 32px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: @theme_fg_color;
+    margin: 8px 0;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: @theme_unfocused_fg_color;
+    margin-bottom: 16px;
+}
+
+/* Welcome page specific */
+.welcome-icon {
+    color: #0066cc;
+    margin-bottom: 16px;
+}
+
+.feature-check {
+    color: #0066cc;
+}
+
+.feature-text {
+    font-size: 14px;
+    color: @theme_fg_color;
+}
+
+/* Buttons */
+.primary-button {
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-weight: 500;
+    min-width: 100px;
+}
+
+.primary-button:hover {
+    background: #0052a3;
+}
+
+.secondary-button {
+    background: @theme_base_color;
+    color: @theme_fg_color;
+    border: 1px solid @borders;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-weight: 500;
+    min-width: 100px;
+}
+
+.secondary-button:hover {
+    background: @theme_selected_bg_color;
+}
+
+/* Rounded frames and cards */
+.rounded-frame {
+    border-radius: 8px;
+    border: 1px solid @borders;
+    background: @theme_base_color;
+}
+
+.info-frame {
+    background: alpha(@theme_selected_bg_color, 0.3);
+    border: 1px solid alpha(@borders, 0.5);
+}
+
+.warning-frame {
+    background: alpha(orange, 0.1);
+    border: 1px solid alpha(orange, 0.3);
+}
+
+.time-frame {
+    background: alpha(#0066cc, 0.1);
+    border: 1px solid alpha(#0066cc, 0.3);
+}
+
+.test-frame {
+    background: @theme_base_color;
+    border: 1px solid @borders;
+}
+
+.preview-frame {
+    background: alpha(@theme_selected_bg_color, 0.2);
+    border: 1px solid @borders;
+}
+
+.toggle-frame,
+.network-frame,
+.options-frame {
+    background: @theme_base_color;
+    border: 1px solid @borders;
+}
+
+/* Form elements */
+.search-entry,
+.user-entry,
+.test-entry,
+.password-entry {
+    border-radius: 6px;
+    border: 1px solid @borders;
+    padding: 8px 12px;
+    font-size: 14px;
+    background: @theme_base_color;
+}
+
+.search-entry:focus,
+.user-entry:focus,
+.test-entry:focus,
+.password-entry:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 1px #0066cc;
+}
+
+.language-combo,
+.timezone-combo,
+.keyboard-combo {
+    border-radius: 6px;
+    border: 1px solid @borders;
+    padding: 8px 12px;
+    background: @theme_base_color;
+}
+
+/* Disk cards */
+.disk-card {
+    background: @theme_base_color;
+    border: 2px solid @borders;
+    border-radius: 8px;
+    padding: 0;
+    margin: 4px 0;
+}
+
+.disk-card:hover {
+    border-color: alpha(#0066cc, 0.5);
+    background: alpha(@theme_selected_bg_color, 0.3);
+}
+
+.disk-card.selected-card {
+    border-color: #0066cc;
+    background: alpha(#0066cc, 0.1);
+}
+
+.disk-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: @theme_fg_color;
+}
+
+.disk-size {
+    font-size: 13px;
+    color: @theme_unfocused_fg_color;
+}
+
+.disk-type {
+    font-size: 12px;
+    color: @theme_unfocused_fg_color;
+}
+
+.disk-icon {
+    color: @theme_unfocused_fg_color;
+}
+
+.selection-check {
+    color: #0066cc;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.selected-card .selection-check {
+    opacity: 1;
+}
+
+/* Network cards */
+.network-card {
+    background: @theme_base_color;
+    border: 1px solid @borders;
+    border-radius: 6px;
+    padding: 0;
+    margin: 2px 0;
+}
+
+.network-card:hover {
+    border-color: alpha(#0066cc, 0.5);
+    background: alpha(@theme_selected_bg_color, 0.3);
+}
+
+.network-card.selected-card {
+    border-color: #0066cc;
+    background: alpha(#0066cc, 0.1);
+}
+
+.network-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: @theme_fg_color;
+}
+
+.network-security {
+    font-size: 12px;
+    color: @theme_unfocused_fg_color;
+}
+
+.network-icon {
+    color: @theme_unfocused_fg_color;
+}
+
+.signal-strength {
+    font-size: 11px;
+    color: @theme_unfocused_fg_color;
+}
+
+.signal-icon {
+    color: green;
+}
+
+/* Labels */
+.field-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: @theme_fg_color;
+}
+
+.section-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: @theme_fg_color;
+}
+
+.toggle-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: @theme_fg_color;
+}
+
+.test-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: @theme_fg_color;
+}
+
+.test-description {
+    font-size: 13px;
+    color: @theme_unfocused_fg_color;
+}
+
+.preview-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: @theme_fg_color;
+}
+
+.sample-text {
+    font-family: monospace;
+    font-size: 12px;
+    color: @theme_unfocused_fg_color;
+    background: alpha(@theme_selected_bg_color, 0.3);
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+.time-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: @theme_fg_color;
+}
+
+.current-time {
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0066cc;
+}
+
+.info-text {
+    font-size: 13px;
+    color: @theme_unfocused_fg_color;
+}
+
+.warning-text {
+    font-size: 13px;
+    color: #d97706;
+    font-weight: 500;
+}
+
+.info-icon {
+    color: #0066cc;
+}
+
+.warning-icon {
+    color: #d97706;
+}
+
+/* Keyboard preview */
+.keyboard-key {
+    background: @theme_base_color;
+    border: 1px solid @borders;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: @theme_fg_color;
+}
+
+/* User form */
+.user-form {
+    background: @theme_base_color;
+    border: 1px solid @borders;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.password-strength {
+    border-radius: 4px;
+    height: 6px;
+}
+
+.password-strength.very-weak {
+    background: #dc2626;
+}
+
+.password-strength.weak {
+    background: #ea580c;
+}
+
+.password-strength.fair {
+    background: #d97706;
+}
+
+.password-strength.good {
+    background: #65a30d;
+}
+
+.password-strength.strong {
+    background: #16a34a;
+}
+
+.strength-text {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Checkboxes */
+.wifi-toggle,
+.admin-check,
+.autologin-check,
+.show-password-check {
+    color: #0066cc;
+}
+
+/* Dialog styling */
+.wifi-dialog {
+    border-radius: 8px;
+}
+
+.dialog-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: @theme_fg_color;
+}
+
+/* Scrolled windows */
+.disk-list {
+    border-radius: 6px;
+    border: 1px solid @borders;
+    background: @theme_base_color;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .welcome-icon,
+    .feature-check,
+    .info-icon,
+    .current-time {
+        color: #3b82f6;
+    }
+    
+    .primary-button {
+        background: #3b82f6;
+    }
+    
+    .primary-button:hover {
+        background: #2563eb;
+    }
+    
+    .disk-card.selected-card,
+    .network-card.selected-card {
+        border-color: #3b82f6;
+        background: alpha(#3b82f6, 0.15);
+    }
+    
+    .selection-check {
+        color: #3b82f6;
+    }
+    
+    .time-frame {
+        background: alpha(#3b82f6, 0.15);
+        border: 1px solid alpha(#3b82f6, 0.3);
+    }
+}

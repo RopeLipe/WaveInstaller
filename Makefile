@@ -1,60 +1,43 @@
-# Makefile for WaveInstaller C GTK Application
-
-# Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 $(shell pkg-config --cflags gtk4 libadwaita-1)
-LDFLAGS = $(shell pkg-config --libs gtk4 libadwaita-1)
-
-# Directories
+CFLAGS = -Wall -Wextra -std=c99 $(shell pkg-config --cflags gtk4)
+LIBS = $(shell pkg-config --libs gtk4)
+TARGET = wave-installer
 SRCDIR = .
-SCREENDIR = screens
-BUILDDIR = build
-RESOURCEDIR = resources
+PAGEDIR = pages
 
 # Source files
-SOURCES = main.c wave-installer.c \
-          $(SCREENDIR)/welcome-screen.c \
-          $(SCREENDIR)/language-screen.c \
-          $(SCREENDIR)/timezone-screen.c \
-          $(SCREENDIR)/keyboard-screen.c \
-          $(SCREENDIR)/disk-screen.c \
-          $(SCREENDIR)/network-screen.c \
-          $(SCREENDIR)/user-screen.c \
-          $(SCREENDIR)/install-screen.c
+SOURCES = main.c installer.c css.c \
+          $(PAGEDIR)/welcome.c \
+          $(PAGEDIR)/language.c \
+          $(PAGEDIR)/timezone.c \
+          $(PAGEDIR)/keyboard.c \
+          $(PAGEDIR)/disk.c \
+          $(PAGEDIR)/network.c \
+          $(PAGEDIR)/user.c
 
 # Object files
-OBJECTS = $(SOURCES:%.c=$(BUILDDIR)/%.o)
-
-# Target executable
-TARGET = $(BUILDDIR)/wave-installer
+OBJECTS = $(SOURCES:.c=.o)
 
 # Default target
 all: $(TARGET)
 
-# Create build directory
-$(BUILDDIR):
-	mkdir -p $(BUILDDIR)
-	mkdir -p $(BUILDDIR)/$(SCREENDIR)
-
-# Build target
-$(TARGET): $(BUILDDIR) $(OBJECTS)
-	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
+# Build the main executable
+$(TARGET): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LIBS)
 
 # Compile source files
-$(BUILDDIR)/%.o: %.c
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
-
-# Install target
-install: $(TARGET)
-	install -D $(TARGET) /usr/local/bin/wave-installer
-	install -D $(RESOURCEDIR)/style.css /usr/local/share/wave-installer/style.css
-	install -D wave-installer.desktop /usr/local/share/applications/wave-installer.desktop
 
 # Clean build files
 clean:
-	rm -rf $(BUILDDIR)
+	rm -f $(OBJECTS) $(TARGET)
 
-# Development run
+# Install target (optional)
+install: $(TARGET)
+	cp $(TARGET) /usr/local/bin/
+
+# Run the application
 run: $(TARGET)
 	./$(TARGET)
 
@@ -62,13 +45,16 @@ run: $(TARGET)
 debug: CFLAGS += -g -DDEBUG
 debug: $(TARGET)
 
-# Package for distribution
-package: $(TARGET)
-	mkdir -p dist/wave-installer/bin
-	mkdir -p dist/wave-installer/share
-	cp $(TARGET) dist/wave-installer/bin/
-	cp -r $(RESOURCEDIR) dist/wave-installer/share/
-	cp README.md dist/wave-installer/
-	tar -czf wave-installer-c.tar.gz -C dist wave-installer
+# Dependencies
+main.o: main.c installer.h
+installer.o: installer.c installer.h
+css.o: css.c installer.h
+$(PAGEDIR)/welcome.o: $(PAGEDIR)/welcome.c installer.h
+$(PAGEDIR)/language.o: $(PAGEDIR)/language.c installer.h
+$(PAGEDIR)/timezone.o: $(PAGEDIR)/timezone.c installer.h
+$(PAGEDIR)/keyboard.o: $(PAGEDIR)/keyboard.c installer.h
+$(PAGEDIR)/disk.o: $(PAGEDIR)/disk.c installer.h
+$(PAGEDIR)/network.o: $(PAGEDIR)/network.c installer.h
+$(PAGEDIR)/user.o: $(PAGEDIR)/user.c installer.h
 
-.PHONY: all clean install run debug package
+.PHONY: all clean install run debug
