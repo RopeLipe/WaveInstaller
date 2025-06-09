@@ -7,22 +7,32 @@ GtkWidget* navigation_box = NULL;
 
 void create_installer_window(GtkApplication *app) {
     // Apply custom CSS first
-    apply_custom_css();
-      // Create main window
+    apply_custom_css();    // Create main window
     main_window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(main_window), "Wave Installer");
     gtk_window_set_decorated(GTK_WINDOW(main_window), FALSE);
-    
-    // Set a default size but allow the window manager to resize/position
+      // Set a default size and positioning hints
     gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
+    gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
+    gtk_window_set_resizable(GTK_WINDOW(main_window), TRUE);
+    
+    // Set size constraints to help with proper sizing
+    GdkGeometry geometry;
+    geometry.min_width = 700;
+    geometry.min_height = 500;
+    geometry.max_width = 1200;
+    geometry.max_height = 900;
+    gtk_window_set_geometry_hints(GTK_WINDOW(main_window), NULL, &geometry, 
+                                  GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE);
     
     // Create main container
     GtkWidget* main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_window_set_child(GTK_WINDOW(main_window), main_box);
-    
-    // Create content area with padding
+      // Create content area with padding
     GtkWidget* content_frame = gtk_frame_new(NULL);
     gtk_widget_add_css_class(content_frame, "main-frame");
+    gtk_widget_set_hexpand(content_frame, TRUE);
+    gtk_widget_set_vexpand(content_frame, TRUE);
     gtk_box_append(GTK_BOX(main_box), content_frame);
     
     GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
