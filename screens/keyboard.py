@@ -7,14 +7,14 @@ gi.require_version('Gtk', '4.0')
 from gi.repository import Gtk
 import subprocess
 
-class KeyboardScreen:
-    def __init__(self, app):
+class KeyboardScreen:    def __init__(self, app):
         self.app = app
         self.selected_layout = None
         self.selected_variant = None
         self.layout_buttons = []
         self.variant_buttons = []
         self.test_entry = None
+        self.variant_box = None
     
     def create_widget(self):
         # Main container

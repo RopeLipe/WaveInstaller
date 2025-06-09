@@ -15,21 +15,25 @@ class WelcomeScreen:
         # Main container
         container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         container.add_css_class("screen-container")
-        
-        # Content area
+          # Content area
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         content.add_css_class("screen-content")
         content.set_valign(Gtk.Align.CENTER)
-          # Title
+        content.set_vexpand(True)
+        
+        # Title
         title = Gtk.Label()
         title.set_markup("<span size='large' weight='bold'>Welcome to Wave Installer</span>")
         title.add_css_class("screen-title")
         content.append(title)
-          # Subtitle
+        
+        # Subtitle
         subtitle = Gtk.Label()
         subtitle.set_text("Let's get your system set up quickly and easily")
         subtitle.add_css_class("screen-subtitle")
         content.append(subtitle)
+        
+        container.append(content)
         
         # Navigation buttons
         nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
@@ -48,7 +52,7 @@ class WelcomeScreen:
         next_btn.add_css_class("primary-button")
         next_btn.connect("clicked", lambda x: self.app.next_screen())
         nav_box.append(next_btn)
-          content.append(nav_box)
-        container.append(content)
+        
+        container.append(nav_box)
         
         return container

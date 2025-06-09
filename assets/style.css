@@ -55,7 +55,9 @@ window {
 .screen-container {
     padding: 40px;
     background: var(--light-grey);
-    min-height: 700px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .screen-content {
@@ -64,6 +66,7 @@ window {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    flex: 1;
 }
 
 /* Headers */
@@ -127,8 +130,8 @@ window {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
+    padding: 20px 40px;
     margin-top: auto;
-    padding-top: 40px;
 }
 
 /* Cards */

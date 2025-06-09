@@ -81,11 +81,13 @@ class LanguageScreen:
         if not self.selected_language:
             first_item = lang_box.get_first_child()
             if first_item:
-                self.select_language("en_US", first_item)
-        
+                self.select_language("en_US", first_item)        
         scrolled.set_child(lang_box)
         content.append(scrolled)
-          # Navigation buttons
+        
+        container.append(content)
+        
+        # Navigation buttons
         nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         nav_box.add_css_class("nav-buttons")
         nav_box.set_halign(Gtk.Align.FILL)
@@ -103,8 +105,7 @@ class LanguageScreen:
         next_btn.connect("clicked", lambda x: self.app.next_screen())
         nav_box.append(next_btn)
         
-        content.append(nav_box)
-        container.append(content)
+        container.append(nav_box)
         
         return container
     
