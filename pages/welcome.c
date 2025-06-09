@@ -1,4 +1,4 @@
-#include "installer.h"
+#include "../installer.h"
 
 GtkWidget* create_welcome_page(void) {
     GtkWidget* page = gtk_box_new(GTK_ORIENTATION_VERTICAL, 40);

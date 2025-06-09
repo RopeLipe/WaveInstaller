@@ -33,10 +33,9 @@ GtkWidget* create_language_page(void) {
     GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
     gtk_widget_set_halign(content_box, GTK_ALIGN_CENTER);
     gtk_widget_set_size_request(content_box, 400, -1);
-    
-    // Search entry
+      // Search entry
     search_entry = gtk_search_entry_new();
-    gtk_search_entry_set_placeholder_text(GTK_SEARCH_ENTRY(search_entry), "Search languages...");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(search_entry), "Search languages...");
     gtk_widget_add_css_class(search_entry, "search-entry");
     g_signal_connect(search_entry, "search-changed", G_CALLBACK(on_search_changed), NULL);
     gtk_box_append(GTK_BOX(content_box), search_entry);

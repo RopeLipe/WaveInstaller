@@ -31,10 +31,9 @@ GtkWidget* create_timezone_page(void) {
     GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
     gtk_widget_set_halign(content_box, GTK_ALIGN_CENTER);
     gtk_widget_set_size_request(content_box, 400, -1);
-    
-    // Search entry for timezones
+      // Search entry for timezones
     timezone_search = gtk_search_entry_new();
-    gtk_search_entry_set_placeholder_text(GTK_SEARCH_ENTRY(timezone_search), "Search timezones...");
+    gtk_entry_set_placeholder_text(GTK_ENTRY(timezone_search), "Search timezones...");
     gtk_widget_add_css_class(timezone_search, "search-entry");
     g_signal_connect(timezone_search, "search-changed", G_CALLBACK(on_timezone_search_changed), NULL);
     gtk_box_append(GTK_BOX(content_box), timezone_search);
