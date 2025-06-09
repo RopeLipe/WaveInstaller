@@ -27,22 +27,29 @@ GtkWidget* create_language_page(void) {
     gtk_widget_add_css_class(subtitle, "page-subtitle");
     gtk_box_append(GTK_BOX(header_box), subtitle);
     
-    gtk_box_append(GTK_BOX(page), header_box);
-      // Content area
-    GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
-    gtk_widget_set_halign(content_box, GTK_ALIGN_CENTER);
+    gtk_box_append(GTK_BOX(page), header_box);    // Content area
+    GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 16);
+    gtk_widget_set_halign(content_box, GTK_ALIGN_FILL);
     gtk_widget_set_hexpand(content_box, TRUE);
-    gtk_widget_set_size_request(content_box, -1, -1);
-      // Search entry
+    gtk_widget_set_vexpand(content_box, TRUE);
+    
+    // Search entry
     search_entry = gtk_search_entry_new();
     gtk_entry_set_placeholder_text(GTK_ENTRY(search_entry), "Search languages...");
     gtk_widget_add_css_class(search_entry, "search-entry");
     g_signal_connect(search_entry, "search-changed", G_CALLBACK(on_search_changed), NULL);
     gtk_box_append(GTK_BOX(content_box), search_entry);
     
-    // Language selection combo box
-    language_combo = gtk_combo_box_text_new();
-    gtk_widget_add_css_class(language_combo, "language-combo");
+    // Scrollable language list
+    GtkWidget* scrolled = gtk_scrolled_window_new();
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_vexpand(scrolled, TRUE);
+    gtk_widget_set_hexpand(scrolled, TRUE);
+    gtk_widget_add_css_class(scrolled, "language-list");
+    
+    GtkWidget* language_list_box = gtk_list_box_new();
+    gtk_widget_add_css_class(language_list_box, "language-listbox");
+    gtk_list_box_set_selection_mode(GTK_LIST_BOX(language_list_box), GTK_SELECTION_SINGLE);
     
     // Add sample languages
     const char* languages[] = {
@@ -69,13 +76,26 @@ GtkWidget* create_language_page(void) {
     };
     
     for (int i = 0; i < 20; i++) {
-        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(language_combo), languages[i]);
+        GtkWidget* row = gtk_list_box_row_new();
+        gtk_widget_add_css_class(row, "language-row");
+        
+        GtkWidget* label = gtk_label_new(languages[i]);
+        gtk_widget_set_halign(label, GTK_ALIGN_START);
+        gtk_widget_set_margin_top(label, 12);
+        gtk_widget_set_margin_bottom(label, 12);
+        gtk_widget_set_margin_start(label, 16);
+        gtk_widget_set_margin_end(label, 16);
+        gtk_list_box_row_set_child(GTK_LIST_BOX_ROW(row), label);
+        
+        gtk_list_box_append(GTK_LIST_BOX(language_list_box), row);
     }
     
-    // Set default selection
-    gtk_combo_box_set_active(GTK_COMBO_BOX(language_combo), 0);
+    // Select first item by default
+    gtk_list_box_select_row(GTK_LIST_BOX(language_list_box), 
+                           gtk_list_box_get_row_at_index(GTK_LIST_BOX(language_list_box), 0));
     
-    gtk_box_append(GTK_BOX(content_box), language_combo);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled), language_list_box);
+    gtk_box_append(GTK_BOX(content_box), scrolled);
     
     // Language info
     GtkWidget* info_frame = create_rounded_frame(NULL);
