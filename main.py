@@ -28,16 +28,15 @@ class WaveInstaller(Adw.Application):
         self.current_screen_index = 0
         self.screens = []
         self.main_window = None
-    
-    def do_activate(self):
-        # Load custom CSS
-        self.load_css()
-        
-        # Create main window
+      def do_activate(self):
+        # Create main window first
         self.main_window = Gtk.ApplicationWindow(application=self)
         self.main_window.set_title("")
         self.main_window.set_default_size(900, 600)
         self.main_window.set_resizable(False)
+        
+        # Load custom CSS after window creation
+        self.load_css()
         
         # Remove titlebar
         self.main_window.set_titlebar(Gtk.HeaderBar())
@@ -51,10 +50,10 @@ class WaveInstaller(Adw.Application):
         
         # Initialize screens
         self.init_screens()
-        
-        # Show first screen
+          # Show first screen
         self.show_screen(0)
-          self.main_window.present()
+        
+        self.main_window.present()
     
     def load_css(self):
         """Load custom CSS styling"""
