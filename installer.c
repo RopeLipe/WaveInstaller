@@ -11,35 +11,25 @@ void create_installer_window(GtkApplication *app) {
     main_window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(main_window), "Wave Installer");
     gtk_window_set_decorated(GTK_WINDOW(main_window), FALSE);
-      // Set a default size and positioning hints
+    
+    // Set a default size and allow proper resizing
     gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
-    gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
     gtk_window_set_resizable(GTK_WINDOW(main_window), TRUE);
-    
-    // Set size constraints to help with proper sizing
-    GdkGeometry geometry;
-    geometry.min_width = 700;
-    geometry.min_height = 500;
-    geometry.max_width = 1200;
-    geometry.max_height = 900;
-    gtk_window_set_geometry_hints(GTK_WINDOW(main_window), NULL, &geometry, 
-                                  GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE);
-    
-    // Create main container
+      // Create main container
     GtkWidget* main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_window_set_child(GTK_WINDOW(main_window), main_box);
-      // Create content area with padding
+    
+    // Create content area with padding
     GtkWidget* content_frame = gtk_frame_new(NULL);
     gtk_widget_add_css_class(content_frame, "main-frame");
     gtk_widget_set_hexpand(content_frame, TRUE);
     gtk_widget_set_vexpand(content_frame, TRUE);
     gtk_box_append(GTK_BOX(main_box), content_frame);
-    
-    GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
-    gtk_widget_set_margin_top(content_box, 40);
-    gtk_widget_set_margin_bottom(content_box, 40);
-    gtk_widget_set_margin_start(content_box, 60);
-    gtk_widget_set_margin_end(content_box, 60);
+      GtkWidget* content_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_margin_top(content_box, 20);
+    gtk_widget_set_margin_bottom(content_box, 20);
+    gtk_widget_set_margin_start(content_box, 40);
+    gtk_widget_set_margin_end(content_box, 40);
     gtk_frame_set_child(GTK_FRAME(content_frame), content_box);
     
     // Create stack for pages
@@ -61,9 +51,7 @@ void create_installer_window(GtkApplication *app) {
     gtk_stack_add_named(GTK_STACK(main_stack), create_keyboard_page(), "keyboard");
     gtk_stack_add_named(GTK_STACK(main_stack), create_disk_page(), "disk");
     gtk_stack_add_named(GTK_STACK(main_stack), create_network_page(), "network");
-    gtk_stack_add_named(GTK_STACK(main_stack), create_user_page(), "user");
-    
-    // Set initial page
+    gtk_stack_add_named(GTK_STACK(main_stack), create_user_page(), "user");    // Set initial page and present window
     gtk_stack_set_visible_child_name(GTK_STACK(main_stack), "welcome");
     setup_navigation_buttons(NULL, "welcome");
     
